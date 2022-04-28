@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import FirstComponent from './components/FirstComponent';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const someName = 'Sergio'
 root.render(
   <React.StrictMode>
-    <App />
+    <FirstComponent name={someName} />
   </React.StrictMode>
 );
 
