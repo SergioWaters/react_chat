@@ -1,0 +1,22 @@
+.wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.messageList {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 70vh;
+  overflow: hidden;
+}
+
+.messageForm {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  left: 0;
+  bottom: 0;
+}

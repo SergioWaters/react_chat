@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import FirstComponent from './components/FirstComponent';
 import reportWebVitals from './reportWebVitals';
+import { Messages } from './components/ClassChatComponent'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const someName = 'Sergio'
 root.render(
-  <React>
+  <React.StrictMode>
+    <Messages />
     <FirstComponent name={someName} />
-  </React>
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,0 +1,35 @@
+.App {
+  border: 2px solid #f8f8f8;
+  min-width: 30%;
+}
+
+.msg {
+  font-size: 24px;
+  color: #f8f8f8;
+  line-height: 28px;
+  font-weight: normal;
+}
+
+.message {
+  text-align: left;
+  box-sizing: border-box;
+  color: teal;
+}
+
+.author {
+  text-align: left;
+  box-sizing: border-box;
+  color: teal;
+}
+
+.text {
+  text-align: left;
+  box-sizing: border-box;
+  color: teal;
+}
+
+.date {
+  text-align: left;
+  box-sizing: border-box;
+  color: teal;
+}

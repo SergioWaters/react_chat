@@ -1,6 +1,6 @@
 import logo from './loading.gif';
 import styles from './first.module.css';
-import Message from "../Message"
+import Greetings from "../Greetings"
 
 const msg = "Hello World!"
 function App(props) {
@@ -10,7 +10,7 @@ function App(props) {
         <img src={logo} className={styles.AppLogo} alt="logo" />
 
 
-        <Message msg={msg} />
+        <Greetings msg={msg} />
         <h3>From {props.name}</h3>
       </header>
     </div>
