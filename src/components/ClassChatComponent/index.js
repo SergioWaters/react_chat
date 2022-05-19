@@ -5,56 +5,83 @@ import Message from '../MessageComponent';
 
 export class Messages extends React.Component {
   state = {
-    message: { author: 'Your Name', text: "Your message", date: new Date() },
+    author: '',
+    text: '',
+    id: (new Date() * Math.random()).toString(),
     messageList: [],
-    BotMessage: 'Hello'
+    chatBot: {
+      author: "Vlad-bot",
+      text: "Have no fear, Vlad is here!",
+      id: (new Date() * Math.random()).toString(),
+    }
   };
   updateMessage = (event) => {
     this.setState({
-      message: { text: event.target.value },
+      text: event.target.value,
     });
   };
   updateAuthor = (event) => {
     this.setState({
-      message: { author: event.target.value },
+      author: event.target.value,
     });
   };
   updateMessageList = (event) => {
-    const { message, messageList } = this.state;
-    const newMessageList = messageList;
-    newMessageList.push(message);
+    const { id, author, text, messageList } = this.state;
+    const message = {
+      author: author,
+      text: text,
+      id: id
+    }
     this.setState({
-      message: {
-        author: 'Your Name',
-        text: "Your message",
-      },
-      messageList: newMessageList,
+      messageList: ([...messageList, message]),
     })
     event.preventDefault()
+  }
+
+  componentDidUpdate() {
+    const messageList = this.state.messageList;
+    const lastMessage = messageList[messageList.length - 1];
+    let timerId = null;
+
+    if (messageList.length && lastMessage?.author !== "Vlad-bot") {
+      timerId = setTimeout(() => {
+        this.setState({
+          messageList: ([...messageList, this.state.chatBot]),
+        })
+      }, 1500);
+    }
+
+    return () => {
+      clearInterval(timerId);
+    };
   }
   render() {
     return (
       <div className={styles.wrapper}>
-        <h1>ClassChatComponent</h1>
+        <h1>Class Chat Component</h1>
+        <span>{this.state.messageList.length} messages total</span>
         <div className={styles.messageList}>
           {
             this.state.messageList.map((message) =>
               <Message
-                key={(new Date() * Math.random()).toString()}
+                key={message.id}
                 author={message.author}
                 text={message.text}
-                date={(new Date()).toString()} />
+                date={(new Date()).toString()}
+              />
             )
           }
         </div>
         <div className={styles.messageForm}>
-          <input
+          <input className={styles.messageAuthor}
             onChange={this.updateAuthor}
-            defaultValue={this.state.message.author} />
-          <textarea
+            placeholder="Name yourself" />
+
+          <textarea className={styles.messageText}
             onChange={this.updateMessage}
-            defaultValue={this.state.message.text} />
-          <button className="messages-button"
+            placeholder="put your message here" />
+
+          <button className={styles.messageButton}
             onClick={this.updateMessageList}>
             Send
           </button>

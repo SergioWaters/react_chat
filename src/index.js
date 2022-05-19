@@ -1,15 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import reportWebVitals from './reportWebVitals';
 import './index.css';
 import FirstComponent from './components/FirstComponent';
-import reportWebVitals from './reportWebVitals';
 import { Messages } from './components/ClassChatComponent'
+import FuncChatComponent from './components/FuncChatComponent';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const someName = 'Sergio'
 root.render(
   <React.StrictMode>
-    <Messages />
+    <div className='chatWrapper'>
+      <Messages />
+      <FuncChatComponent />
+    </div>
     <FirstComponent name={someName} />
   </React.StrictMode>
 );
