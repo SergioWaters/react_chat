@@ -2,20 +2,39 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
-import FirstComponent from './components/FirstComponent';
-import { Messages } from './components/ClassChatComponent'
-import FuncChatComponent from './components/FuncChatComponent';
+// import Messages from './components/ClassChatComp/classChat'
+// import FirstComponent from './components/FirstComp/firstComp'
+// import FuncChatComponent from './components/FuncChatComp/funcChat'
+import { Layout, Message, FirstComp, FuncChatComponent, ClassChat } from './components'
 
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+
+const chatTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#fdfdfd",
+    },
+    secondary: {
+      main: "#f8f8f8",
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const someName = 'Sergio'
 root.render(
   <React.StrictMode>
-    <div className='chatWrapper'>
-      <Messages />
-      <FuncChatComponent />
-    </div>
-    <FirstComponent name={someName} />
+    <ThemeProvider theme={chatTheme}>
+      <div className='chatWrapper'>
+        <ClassChat />
+        <FuncChatComponent />
+      </div>
+      <Layout
+        header={<Message />}
+        chats={<Message />}
+        messages={<Message />} />
+      <FirstComp name={someName} />
+    </ThemeProvider>
   </React.StrictMode>
 );
 

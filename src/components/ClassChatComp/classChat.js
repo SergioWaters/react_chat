@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './index.module.css';
-import Message from '../MessageComponent';
+import { Message } from '../../components';
 
 
-export class Messages extends React.Component {
+export class ClassChat extends React.Component {
   state = {
     author: '',
     text: '',

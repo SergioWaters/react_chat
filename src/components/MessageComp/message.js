@@ -1,6 +1,6 @@
-import styles from "./msg.module.css"
+import styles from "./index.module.css"
 
-function Message(props) {
+export const Message = (props) => {
   return (
     <div className={styles.message}>
       <h3 className={styles.author}>{props.author}</h3>
@@ -9,5 +9,3 @@ function Message(props) {
     </div>
   );
 }
-
-export default Message;

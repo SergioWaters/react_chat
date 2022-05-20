@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './index.module.css';
-import Message from '../MessageComponent/'
+import { Message } from '../../components'
 
 const chatBot = {
   author: "Vlad-bot",
   text: "Have no fear, Vlad is here!",
   id: (new Date() * Math.random()).toString()
 };
-export default function FuncChatComponent() {
-  //
+export const FuncChatComponent = () => {
+
   const [text, setText] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [author, setAuthor] = useState("");
@@ -28,7 +28,6 @@ export default function FuncChatComponent() {
         setMessageList([...messageList, chatBot]);
       }, 1500);
     }
-
     return () => {
       clearInterval(timerId);
     };
@@ -46,8 +45,6 @@ export default function FuncChatComponent() {
     }
   };
 
-
-  //
   return (
     <div className={styles.wrapper}>
       <h1>Functional Chat Component</h1>

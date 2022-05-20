@@ -1,9 +1,9 @@
 import logo from './loading.gif';
-import styles from './first.module.css';
-import Greetings from "../Greetings"
+import styles from './index.module.css';
+import Greetings from "../GreetingsComp/greetings"
 
 const msg = "Hello World!"
-function App(props) {
+export const FirstComp = (props) => {
   return (
     <div className={styles.App}>
       <header className={styles.AppHeader}>
@@ -16,5 +16,3 @@ function App(props) {
     </div>
   );
 }
-
-export default App;
