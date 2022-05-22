@@ -1,16 +1,14 @@
 .wrapper {
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 10px;
+  width: 100%;
 }
 
 .messageList {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  height: 70vh;
-  overflow: hidden;
+  overflow: auto;
+  align-items: flex-start;
 }
 
 .messageForm {
@@ -23,12 +21,9 @@
 
 .messageAuthor {
   margin-bottom: 10px;
-  border-radius: 15px;
   box-sizing: border-box;
-  border: 1px solid teal;
   padding: 5px;
   color: teal;
-  background-color: #f8f8f8;
 }
 
 .messageText {

@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './index.module.css';
 import { Message } from '../../components';
-
+import { Button, TextField } from '@material-ui/core'
 
 export class ClassChat extends React.Component {
   state = {
@@ -27,11 +27,7 @@ export class ClassChat extends React.Component {
   };
   updateMessageList = (event) => {
     const { id, author, text, messageList } = this.state;
-    const message = {
-      author: author,
-      text: text,
-      id: id
-    }
+    const message = { author, text, id };
     this.setState({
       messageList: ([...messageList, message]),
     })
@@ -50,15 +46,12 @@ export class ClassChat extends React.Component {
         })
       }, 1500);
     }
-
-    return () => {
-      clearInterval(timerId);
-    };
+    clearInterval(timerId);
   }
   render() {
     return (
       <div className={styles.wrapper}>
-        <h1>Class Chat Component</h1>
+        <h3>Class Chat Component</h3>
         <span>{this.state.messageList.length} messages total</span>
         <div className={styles.messageList}>
           {
@@ -73,18 +66,27 @@ export class ClassChat extends React.Component {
           }
         </div>
         <div className={styles.messageForm}>
-          <input className={styles.messageAuthor}
-            onChange={this.updateAuthor}
-            placeholder="Name yourself" />
 
-          <textarea className={styles.messageText}
-            onChange={this.updateMessage}
-            placeholder="put your message here" />
+          <TextField
+            id="standard-required"
+            label="Name yourself"
+            onChange={(e) => this.updateAuthor(e.target.value)}
+          />
 
-          <button className={styles.messageButton}
+
+          <TextField
+            onChange={(e) => this.updateMessage(e.target.value)}
+            id="standard-textarea"
+            label="Put your message here"
+            multiline
+          />
+
+          <Button
+            variant="contained"
+            color="primary"
             onClick={this.updateMessageList}>
             Send
-          </button>
+          </Button>
         </div>
       </div>
     );

@@ -4,3 +4,7 @@ export * from './FuncChatComp'
 export * from './GreetingsComp'
 export * from './LayoutComp'
 export * from './MessageComp'
+export * from './HeaderComp'
+export * from './ListComp'
+
+

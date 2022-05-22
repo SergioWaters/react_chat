@@ -1,24 +1,30 @@
+.wrapper {
+  height: 100vh;
+}
+
 .body {
   display: flex;
   box-sizing: border-box;
 }
 
 .header {
-  display: flex;
-  box-sizing: border-box;
+  z-index: 1001;
+  height: 10vh;
 }
 
 .content {
   display: flex;
-  box-sizing: border-box;
+  height: 90vh;
 }
 
 .chats {
-  display: flex;
-  box-sizing: border-box;
+  overflow-y: auto;
+  width: 35%;
 }
 
 .messages {
   display: flex;
   box-sizing: border-box;
+  width: 65%;
+  color: #008080;
 }
