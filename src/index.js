@@ -1,14 +1,45 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import FirstComponent from './components/FirstComponent';
 import reportWebVitals from './reportWebVitals';
+import './index.css';
+import { chatsArr } from './resourses/chats'
+import {
+  Layout,
+  FirstComp,
+  FuncChatComp,
+  ClassChat,
+  Header,
+  ChatList
+} from './components'
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+// import { AppBar } from "@material-ui/core"
+
+const chatTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#008080",
+    },
+    secondary: {
+      main: "#f8f8f8",
+    },
+  },
+});
+
+const chatList = [...chatsArr]
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const someName = 'Sergio'
 root.render(
   <React.StrictMode>
-    <FirstComponent name={someName} />
+    <ThemeProvider theme={chatTheme}>
+      <Layout
+        header={<Header />}
+        chats={<ChatList list={chatList} />}
+        ClassMessages={<ClassChat />}
+        FuncMessages={<FuncChatComp />}
+      />
+      <FirstComp name={someName} />
+    </ThemeProvider>
   </React.StrictMode>
 );
 
