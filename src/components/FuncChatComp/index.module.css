@@ -1,15 +1,23 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 10px;
   width: 100%;
+  position: relative;
+}
+
+.title {
+  background-color: #f8f8f8;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .messageList {
   overflow: auto;
-  align-items: flex-start;
-  align-content: flex-start;
 }
 
 .messageForm {

@@ -42,12 +42,14 @@ export const ChatList = (props) => {
                     <Typography
                       component="span"
                       variant="body2"
-                      className={classes.inline}
                       color="textPrimary"
                     >
                       {item.text}...
                     </Typography>
-                    <h6>{item.date}</h6>
+                    <Typography
+                    >
+                      {item.date}
+                    </Typography>
                   </React.Fragment>
                 }
               />

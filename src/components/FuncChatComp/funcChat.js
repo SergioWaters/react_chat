@@ -3,12 +3,6 @@ import styles from './index.module.css';
 import { Message } from '../../components'
 import { Button, TextField } from '@material-ui/core'
 
-const chatBot = {
-  author: "Vlad-bot",
-  text: "Have no fear, Vlad is here!",
-  id: (Date.now() * Math.random()).toString(),
-  date: new Date().toLocaleString('ru-RU')
-};
 export const FuncChatComp = () => {
 
   const [messageList, setMessageList] = useState([]);
@@ -26,6 +20,12 @@ export const FuncChatComp = () => {
   useEffect(() => {
     const lastMessage = messageList[messageList.length - 1];
     let timerId = null;
+    const chatBot = {
+      author: "Vlad-bot",
+      text: "Have no fear, Vlad is here!",
+      id: getId(),
+      date: getDate()
+    };
 
     if (messageList.length && lastMessage?.author !== "Vlad-bot") {
       timerId = setTimeout(() => {
@@ -36,13 +36,18 @@ export const FuncChatComp = () => {
       clearInterval(timerId);
     };
   }, [messageList]);
-
+  const getDate = () => {
+    return (new Date()).toLocaleString("ru-RU")
+  }
+  const getId = () => {
+    return (Date.now() * Math.random()).toString()
+  }
   const updateMessageList = () => {
     if (text) {
       setMessageList([...messageList, {
         author: author || "Anonimous",
         text: text,
-        id: (Date.now() * Math.random()).toString(),
+        id: getId(),
       }]);
     }
     setText('')
@@ -51,7 +56,7 @@ export const FuncChatComp = () => {
   return (
     <>
       <div className={styles.wrapper}>
-        <h3>Functional Chat Component <span>{messageList.length} messages total</span></h3>
+        <h3 className={styles.title}>Functional Chat Component <span>{messageList.length} messages total</span></h3>
         <div className={styles.messageList} ref={scrollRef}>
           {
             messageList.map((message) =>
