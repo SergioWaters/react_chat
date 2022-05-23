@@ -4,18 +4,21 @@ import { Message } from '../../components';
 import { Button, TextField } from '@material-ui/core'
 
 export class ClassChat extends React.Component {
+  constructor(props) {
+    super(props);
+    this.scrollRef = React.createRef();
+  };
   state = {
     author: '',
     text: '',
-    id: (new Date() * Math.random()).toString(),
+    id: '',
     messageList: [],
-    chatBot: {
-      author: "Vlad-bot",
-      text: "Have no fear, Vlad is here!",
-      id: (new Date() * Math.random()).toString(),
-    }
   };
-  updateMessage = (event) => {
+  getId() {
+    const id = (new Date() * Math.random()).toString()
+    return id
+  }
+  updateText = (event) => {
     this.setState({
       text: event.target.value,
     });
@@ -26,34 +29,51 @@ export class ClassChat extends React.Component {
     });
   };
   updateMessageList = (event) => {
-    const { id, author, text, messageList } = this.state;
+    let { id, author, text, messageList } = this.state;
+    if (!author) author = "Anonimous";
+    if (!text) return;
+    id = this.getId();
     const message = { author, text, id };
     this.setState({
       messageList: ([...messageList, message]),
+      text: '',
     })
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
 
-  componentDidUpdate() {
+  onUpdate() {
     const messageList = this.state.messageList;
     const lastMessage = messageList[messageList.length - 1];
     let timerId = null;
+    const chatBot = {
+      author: "Vlad-bot",
+      text: "Have no fear, Vlad is here!",
+      id: this.getId(),
+    }
 
     if (messageList.length && lastMessage?.author !== "Vlad-bot") {
       timerId = setTimeout(() => {
         this.setState({
-          messageList: ([...messageList, this.state.chatBot]),
+          messageList: ([...messageList, chatBot]),
         })
       }, 1500);
     }
-    clearInterval(timerId);
+    return () => {
+      clearInterval(timerId);
+    };
+  };
+
+  componentDidUpdate() {
+    this.onUpdate()
+    this.scrollRef.current.scrollTo(0, this.scrollRef.current.scrollHeight);
   }
+
   render() {
     return (
       <div className={styles.wrapper}>
-        <h3>Class Chat Component</h3>
-        <span>{this.state.messageList.length} messages total</span>
-        <div className={styles.messageList}>
+        <h3 className={styles.title}>Class Chat Component <span>{this.state.messageList.length} messages total</span></h3>
+
+        <div className={styles.messageList} ref={this.scrollRef}>
           {
             this.state.messageList.map((message) =>
               <Message
@@ -70,15 +90,17 @@ export class ClassChat extends React.Component {
           <TextField
             id="standard-required"
             label="Name yourself"
-            onChange={(e) => this.updateAuthor(e.target.value)}
+            onChange={(e) => this.updateAuthor(e)}
+            value={this.state.author}
           />
 
 
           <TextField
-            onChange={(e) => this.updateMessage(e.target.value)}
+            onChange={(e) => this.updateText(e)}
             id="standard-textarea"
             label="Put your message here"
             multiline
+            value={this.state.text}
           />
 
           <Button
