@@ -2,17 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
-import { chatsArr } from './resourses/chats'
-import {
-  Layout,
-  FirstComp,
-  FuncChatComp,
-  ClassChat,
-  Header,
-  ChatList
-} from './components'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProfilePage, ChatPage } from "./pages";
+import { FirstComp, Header } from './components'
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
-// import { AppBar } from "@material-ui/core"
 
 const chatTheme = createTheme({
   palette: {
@@ -25,20 +18,25 @@ const chatTheme = createTheme({
   },
 });
 
-const chatList = [...chatsArr]
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const someName = 'Sergio'
+const someName = 'This Page Does not Exist'
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={chatTheme}>
-      <Layout
-        header={<Header />}
-        chats={<ChatList list={chatList} />}
-        ClassMessages={<ClassChat />}
-        FuncMessages={<FuncChatComp />}
-      />
-      <FirstComp name={someName} />
+      <BrowserRouter>
+
+        <Header />
+
+        <Routes>
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/create" element={<ChatPage />} />
+          <Route path="/create/*" element={<ChatPage />} />
+          <Route path="/chat/*" element={<ChatPage />} />
+          <Route path="/" element={<ProfilePage />} />
+          <Route path="*" element={<FirstComp name={someName} />} />
+        </Routes>
+
+      </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>
 );

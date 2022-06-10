@@ -1,6 +1,6 @@
 import logo from './loading.gif';
 import styles from './index.module.css';
-import Greetings from "../GreetingsComp/greetings"
+import Greetings from "./GreetingsComp/greetings"
 
 const msg = "Hello World!"
 export const FirstComp = (props) => {

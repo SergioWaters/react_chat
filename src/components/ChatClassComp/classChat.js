@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './index.module.css';
-import { Message } from '../../components';
+import { Message } from '..';
 import { Button, TextField } from '@material-ui/core'
 
 export class ClassChat extends React.Component {
