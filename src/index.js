@@ -29,10 +29,8 @@ root.render(
 
         <Routes>
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/create" element={<ChatPage />} />
-          <Route path="/create/*" element={<ChatPage />} />
           <Route path="/chat/*" element={<ChatPage />} />
-          <Route path="/" element={<ProfilePage />} />
+          <Route exact path="/" element={<ProfilePage />} />
           <Route path="*" element={<FirstComp name={someName} />} />
         </Routes>
 

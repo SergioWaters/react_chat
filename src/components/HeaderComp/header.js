@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Header = (props) => {
+export const Header = ({ clickHandlerPr }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -89,7 +89,7 @@ export const Header = (props) => {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const clickHandler = props.clickHandler
+  const clickHandler = clickHandlerPr
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -175,7 +175,7 @@ export const Header = (props) => {
             color="inherit"
             aria-label="open drawer"
           >
-            <Link to='/create' style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link to='/chat/create' style={{ textDecoration: 'none', color: 'inherit' }}>
               <RateReviewIcon onClick={clickHandler} />
             </Link>
           </IconButton>

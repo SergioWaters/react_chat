@@ -55,7 +55,7 @@ export const chatsArr = [
     messageList: [{
       author: "Vlad-bot",
       text: 'You can ask Bot any questions',
-      id: 1234567894
+      id: 1234567896
     }],
   },
   {

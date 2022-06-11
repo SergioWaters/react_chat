@@ -3,8 +3,8 @@
   flex-direction: column;
   justify-content: flex-end;
   padding: 10px;
-  width: 100%;
   position: relative;
+  width: 100%;
 }
 
 .title {
@@ -18,16 +18,22 @@
   flex-direction: column;
 }
 
-.messageList {
+.list {
   overflow: auto;
+  height: 100%;
+}
+
+.listItem {
+  list-style: none;
+  padding: 5px;
+  cursor: pointer;
 }
 
 .messageForm {
   display: flex;
   flex-direction: column;
-  position: relative;
-  left: 0;
-  bottom: 0;
+  align-self: flex-end;
+  width: 100%;
 }
 
 .messageAuthor {
@@ -35,6 +41,7 @@
   box-sizing: border-box;
   padding: 5px;
   color: teal;
+  width: 73ch;
 }
 
 .messageText {
@@ -46,6 +53,7 @@
   padding: 5px;
   color: teal;
   background-color: #f8f8f8;
+  width: 73ch;
 }
 
 .messageButton {

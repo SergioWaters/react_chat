@@ -11,8 +11,8 @@ const getId = () => {
   return (Date.now() * Math.random()).toString()
 };
 
-export const FuncChat = (props) => {
-  const getAllChats = Object.assign({}, ...props.chats.map(obj => ({
+export const FuncChat = ({ chats }) => {
+  const getAllChats = Object.assign({}, ...chats.map(obj => ({
     [obj.id]: obj.messageList
   })));
 
@@ -20,7 +20,7 @@ export const FuncChat = (props) => {
 
   const [messageList, setMessageList] = useState(getAllChats);
   const [text, setText] = useState("");
-  const [author, setAuthor] = useState("");
+  // const [author, setAuthor] = useState("");
 
   const inputRef = useRef();
   const scrollRef = useRef();
@@ -104,13 +104,13 @@ export const FuncChat = (props) => {
         </div>
         <div className={styles.messageForm}>
 
-          <TextField
+          {/* <TextField
             id="standard-required"
             label="Name yourself"
             onChange={(e) => setAuthor(e.target.value)}
             value={author}
           // placeholder="placeholder" 
-          />
+          /> */}
 
           <TextField inputRef={inputRef}
             onChange={(e) => setText(e.target.value)}
@@ -125,7 +125,7 @@ export const FuncChat = (props) => {
             variant="contained"
             color="primary"
             // sendIcon={<Icon>send</Icon>}
-            onClick={() => updateMessageList(text, author)}
+            onClick={() => updateMessageList(text)}
           >
             send
           </Button>
