@@ -19,12 +19,12 @@
 
 .chats {
   overflow-y: auto;
-  width: 35%;
+  width: 37ch;
 }
 
 .messages {
   display: flex;
   box-sizing: border-box;
-  width: 65%;
+  width: 100%;
   color: #008080;
 }
