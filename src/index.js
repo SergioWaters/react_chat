@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProfilePage, ChatPage } from "./pages";
 import { FirstComp, Header } from './components'
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 const chatTheme = createTheme({
   palette: {
@@ -22,20 +24,22 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 const someName = 'This Page Does not Exist'
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={chatTheme}>
-      <BrowserRouter>
+    <Provider store={store}>
+      <ThemeProvider theme={chatTheme}>
+        <BrowserRouter>
 
-        <Header />
+          <Header />
 
-        <Routes>
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/chat/*" element={<ChatPage />} />
-          <Route exact path="/" element={<ProfilePage />} />
-          <Route path="*" element={<FirstComp name={someName} />} />
-        </Routes>
+          <Routes>
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/chat/*" element={<ChatPage />} />
+            <Route exact path="/" element={<ProfilePage />} />
+            <Route path="*" element={<FirstComp name={someName} />} />
+          </Routes>
 
-      </BrowserRouter>
-    </ThemeProvider>
+        </BrowserRouter>
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 );
 
