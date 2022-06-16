@@ -77,9 +77,6 @@ export const FuncChat = ({ chats }) => {
     };
   }, [messageList, contactId]);
 
-
-
-
   const messages = messageList[contactId] ?? []
   return (
     <>
@@ -114,7 +111,6 @@ export const FuncChat = ({ chats }) => {
 
           <TextField inputRef={inputRef}
             onChange={(e) => setText(e.target.value)}
-            // placeholder="Put your message here"
             id="standard-textarea"
             label="Put your message here"
             multiline
@@ -135,5 +131,3 @@ export const FuncChat = ({ chats }) => {
     </>
   );
 }
-
-
