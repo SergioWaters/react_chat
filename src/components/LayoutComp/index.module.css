@@ -1,15 +1,8 @@
-.wrapper {
-  height: 100vh;
-}
+.wrapper {}
 
 .body {
   display: flex;
   box-sizing: border-box;
-}
-
-.header {
-  z-index: 1001;
-  height: 10vh;
 }
 
 .content {
