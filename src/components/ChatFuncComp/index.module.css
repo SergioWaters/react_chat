@@ -24,10 +24,15 @@
 
 .messageForm {
   display: flex;
-  flex-direction: column;
   position: relative;
+  width: 100%;
   left: 0;
   bottom: 0;
+}
+
+.input {
+  flex-grow: 1;
+  margin: 0px 10px;
 }
 
 .messageAuthor {

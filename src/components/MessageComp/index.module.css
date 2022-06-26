@@ -4,6 +4,8 @@
   text-align: left;
   box-sizing: border-box;
   min-height: fit-content;
+  max-width: 60%;
+  min-width: 200px;
 }
 
 .author {

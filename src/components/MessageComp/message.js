@@ -2,6 +2,7 @@ import styles from "./index.module.css"
 import { Card } from '@material-ui/core'
 
 export const Message = ({ author, text, date }) => {
+
   return (
     <>
       <Card className={styles.message}>

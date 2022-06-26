@@ -5,7 +5,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 // import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import RateReviewIcon from '@material-ui/icons/RateReview';
 import Menu from '@material-ui/core/Menu';
@@ -137,17 +136,13 @@ export const Header = ({ clickHandlerPr }) => {
     >
       <MenuItem>
         <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
+          <MailIcon />
         </IconButton>
         <p>Messages</p>
       </MenuItem>
       <MenuItem>
         <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
-            <NotificationsIcon />
-          </Badge>
+          <NotificationsIcon />
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
@@ -198,16 +193,12 @@ export const Header = ({ clickHandlerPr }) => {
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton aria-label="show 4 new mails" color="inherit">
-              {/* <Badge badgeContent={4} color="secondary"> */}
               <Link to="/chat" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <MailIcon />
               </Link>
-              {/* </Badge> */}
             </IconButton>
             {/* <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
                 <NotificationsIcon />
-              </Badge>
             </IconButton> */}
             <IconButton
               edge="end"

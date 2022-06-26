@@ -3,6 +3,7 @@ import styles from './index.module.css';
 import { Message } from '../../components'
 import { Button, TextField } from '@material-ui/core'
 import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from "react-redux";
 
 const getDate = () => {
   return (new Date()).toLocaleString("ru-RU")
@@ -11,16 +12,18 @@ const getId = () => {
   return (Date.now() * Math.random()).toString()
 };
 
-export const FuncChat = ({ chats }) => {
-  const getAllChats = Object.assign({}, ...chats.map(obj => ({
-    [obj.id]: obj.messageList
-  })));
+export const FuncChat = ({ chatsArr }) => {
 
   const { contactId } = useParams();
 
-  const [messageList, setMessageList] = useState(getAllChats);
+  const { messageList } = useSelector((store) => store.messages);
+  const { contactList } = useSelector((store) => store.contacts);
+
+  const [messList, setMessageList] = useState(messageList);
   const [text, setText] = useState("");
-  // const [author, setAuthor] = useState("");
+  const [authorsArr] = useState(contactList);
+
+  const dispatch = useDispatch();
 
   const inputRef = useRef();
   const scrollRef = useRef();
@@ -39,13 +42,13 @@ export const FuncChat = ({ chats }) => {
         id: getId(),
       };
       if (text) {
+        // dispatch(addMessage())
         setMessageList((state) => (
           {
             ...state,
             [contactId]: [...messArr, mess],
           }
-        )
-        );
+        ));
         setText("");
       }
     },
@@ -53,7 +56,7 @@ export const FuncChat = ({ chats }) => {
   );
 
   useEffect(() => {
-    const messArr = messageList[contactId] ?? [];
+    const messArr = messList[contactId] ?? [];
     const lastMessage = messArr[messArr.length - 1];
 
     let timerId = null;
@@ -75,15 +78,15 @@ export const FuncChat = ({ chats }) => {
     return () => {
       clearInterval(timerId);
     };
-  }, [messageList, contactId]);
+  }, [messList, contactId]);
+  const messages = messList[contactId] ?? []
 
-  const messages = messageList[contactId] ?? []
   return (
     <>
       <div className={styles.wrapper}>
         <div className={styles.title}>
           <span>Functional Chat Component</span>
-          <span>{messages[0]?.author}</span>
+          <span>{authorsArr[contactId] + contactId}</span>
           <span>{messages.length} messages total</span>
         </div>
         <div className={styles.messageList} ref={scrollRef}>
@@ -93,14 +96,12 @@ export const FuncChat = ({ chats }) => {
                 key={message.id || getId()}
                 author={message.author}
                 text={message.text}
-                date={message.date || getDate()
-                }
+                date={message.date || getDate()}
               />
             )
           }
         </div>
         <div className={styles.messageForm}>
-
           {/* <TextField
             id="standard-required"
             label="Name yourself"
@@ -108,24 +109,22 @@ export const FuncChat = ({ chats }) => {
             value={author}
           // placeholder="placeholder" 
           /> */}
-
           <TextField inputRef={inputRef}
             onChange={(e) => setText(e.target.value)}
             id="standard-textarea"
             label="Put your message here"
             multiline
             value={text}
+            className={styles.input}
           />
-
           <Button
             variant="contained"
             color="primary"
-            // sendIcon={<Icon>send</Icon>}
             onClick={() => updateMessageList(text)}
+            className={styles.input}
           >
             send
           </Button>
-
         </div>
       </div>
     </>

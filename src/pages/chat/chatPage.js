@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { chatsArr } from '../../resourses/chats.js'
+// import { chatsArr } from '../../resourses/chats.js'
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   Layout,
@@ -11,23 +12,20 @@ import {
 } from '../../components'
 
 export const ChatPage = () => {
-
-  const [authorsArr] = useState([...new Set(chatsArr.map((c) => c.author))]);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [chats, setChats] = useState(chatsArr);
+  const chats = useSelector((state) => state.contacts);
+  const [chatsArr, setChats] = useState(chats);
 
   const updateChats = (newChat) => {
-    const find = chats.findIndex((chat) => chat.author === newChat.author);
+    const find = chatsArr.findIndex((chat) => chat.author === newChat.author);
     let chatId = null;
-
     if (find >= 0) {
-      const ml = [...chats[find].messageList, ...newChat.messageList];
-      chats[find].messageList = ml;
-      chatId = chats[find].id;
+      const ml = [...chatsArr[find].messageList, ...newChat.messageList];
+      chatsArr[find].messageList = ml;
+      chatId = chatsArr[find].id;
     } else {
-      const newChatsArr = [newChat, ...chats];
-      setChats(newChatsArr);
+      setChats([newChat, ...chatsArr]);
       chatId = newChat.id
     }
     navigate(`/chat/${chatId}`);
@@ -47,8 +45,8 @@ export const ChatPage = () => {
         path="/create"
         element={
           <Layout
-            chats={<ChatList chatsArr={chats} />}
-            messages={<CreateChat getChat={updateChats} chatsArr={authorsArr} />}
+            chats={<ChatList />}
+            messages={<CreateChat />}
           />
         }
       />
@@ -56,8 +54,7 @@ export const ChatPage = () => {
         exact path="/"
         element={
           <Layout
-            chats={<ChatList chatsArr={chats} />}
-            // ClassMessages={<div>Choose contact to hangout with</div>}
+            chats={<ChatList />}
             messages={<div>Choose contact to hangout with</div>}
 
           />
@@ -66,9 +63,8 @@ export const ChatPage = () => {
       <Route
         path=":contactId"
         element={<Layout
-          chats={<ChatList chatsArr={chats} />}
-          // ClassMessages={<ClassChat />}
-          messages={<FuncChat chats={chats} />}
+          chats={<ChatList />}
+          messages={<FuncChat />}
         />}
       />
     </Routes>

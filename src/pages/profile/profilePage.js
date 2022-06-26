@@ -14,15 +14,18 @@ import styles from './index.module.css';
 
 export const ProfilePage = () => {
 
-  const { profile } = useSelector((state) => state)
+  const {
+    firstName,
+    lastName,
+    radio,
+    isVisibleProfile } = useSelector((state) => state.profile);
 
   const [form, setForm] = useState({
-    firstName: profile.firstName,
-    lastName: profile.lastName,
-    radio: profile.radio,
+    firstName,
+    lastName,
+    radio,
+    isVisibleProfile
   });
-
-  // const [isVisProfile] = useState(profile.isVisibleProfile)
 
   const dispatch = useDispatch();
 
@@ -35,7 +38,6 @@ export const ProfilePage = () => {
       });
     }
   };
-
 
   return (
     <div className={styles.wrapper}>
@@ -64,11 +66,9 @@ export const ProfilePage = () => {
       />
 
       <FormControl>
-
         <RadioGroup row
           value={form.radio}
           onChange={handleChangeForm}
-
         >
           <FormControlLabel
             label="Male"
@@ -100,7 +100,7 @@ export const ProfilePage = () => {
         control={
           <Checkbox
             onChange={() => dispatch(toggleVisibleProfile())}
-            checked={profile.isVisibleProfile}
+            checked={isVisibleProfile}
             color="primary"
             inputProps={{
               "data-name": "isVisibleProfile",

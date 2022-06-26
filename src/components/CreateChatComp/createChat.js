@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './index.module.css';
-import { Button, TextField } from '@material-ui/core'
+import { Button, TextField, ListItem, List } from '@material-ui/core'
+import { useDispatch, useSelector } from "react-redux";
+import { addChat } from "../../store/contacts";
+import { addMsg } from "../../store/messages";
+import { useNavigate } from "react-router-dom";
+
 
 const getDate = () => {
   return (new Date()).toLocaleString("ru-RU")
@@ -11,48 +16,62 @@ const getId = () => {
 
 export const CreateChat = ({ getChat, chatsArr }) => {
 
-  const [authorsArr] = useState(chatsArr);
-  const [text, setText] = useState("");
-  const [author, setAuthor] = useState("");
+  const navigate = useNavigate()
+  const dispatch = useDispatch();
   const inputRef = useRef();
+  const { contactList } = useSelector((store) => store.contacts)
+
+  const [authorsArr] = useState(contactList ?? chatsArr);
+  const [author, setAuthor] = useState('');
+  const [id, setId] = useState('');
+  const [text, setText] = useState('');
+
+  const getContact = (e) => {
+    const id = e.target.getAttribute('data-id');
+    const author = e.target.innerText;
+    setId(id);
+    setAuthor(author);
+  }
+
+  const sendContact = () => {
+    const sendTo = id || getId()
+    if (text && author)
+      dispatch(addChat({
+        id: sendTo,
+        author: author
+      }));
+    dispatch(addMsg({
+      contactId: sendTo,
+      author: 'Me',
+      text: text,
+      date: getDate(),
+      id: getId()
+    }))
+    navigate(`/chat/${sendTo}`)
+  }
 
   useEffect(() => {
     inputRef.current?.focus();
   }, [authorsArr]);
 
-  const createNewChat = () => {
-    const mess = {
-      author: author,
-      id: getId(),
-      messageList: [{
-        author: 'Me',
-        text: text,
-        date: getDate(),
-        id: getId()
-      }],
-    };
-    if (text && author) {
-      setText("");
-      setAuthor("");
-      getChat(mess);
-    }
-  };
   return (
     <>
       <div className={styles.wrapper}>
         Your common contacts:
-        <ul className={styles.list}>
+        <List className={styles.list}>
           {
-            authorsArr.map((author) => {
-              return <li key={author}
+            Object.entries(authorsArr).map((author) => {
+              return <ListItem
                 className={styles.listItem}
-                onClick={(e) => setAuthor(e.target.textContent)}
+                data-id={author[0]}
+                key={author[0]}
+                onClick={(e) => getContact(e)}
               >
-                {author}
-              </li>
+                {author[1]}
+              </ListItem>
             })
           }
-        </ul>
+        </List>
         <div className={styles.messageForm}>
 
           <TextField inputRef={inputRef}
@@ -60,6 +79,9 @@ export const CreateChat = ({ getChat, chatsArr }) => {
             label="Who do you whant to hangout with?"
             onChange={(e) => setAuthor(e.target.value)}
             value={author}
+            inputProps={{
+              "data-name": "author",
+            }}
           />
 
           <TextField
@@ -68,12 +90,15 @@ export const CreateChat = ({ getChat, chatsArr }) => {
             label="Put your message here"
             multiline
             value={text}
+            inputProps={{
+              "data-name": "text",
+            }}
           />
 
           <Button
             variant="contained"
             color="primary"
-            onClick={() => createNewChat()}
+            onClick={() => sendContact()}
           >
             send
           </Button>
