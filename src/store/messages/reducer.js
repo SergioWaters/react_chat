@@ -34,7 +34,13 @@ export const messagesReducer = (state = initialState, action) => {
         },
       };
     case DELETE_MSG:
-      return delete state.messageList[payload];
+      return {
+        ...state,
+        messageList: {
+          ...state.messageList,
+          [payload.contactId]: state.messageList[payload.contactId].filter((mess) => mess.id !== payload.messId)
+        },
+      };
     default:
       return state;
   }

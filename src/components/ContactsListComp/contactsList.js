@@ -39,10 +39,10 @@ export const ChatList = ({ chatsArr }) => {
               selected={contact === item[1]}
               author={item[1]}
               text={
-                messageList[item[0]][messageList[item[0]].length - 1].text
+                messageList[item[0]][messageList[item[0]].length - 1]?.text
               }
               date={
-                messageList[item[0]][messageList[item[0]].length - 1].date
+                messageList[item[0]][messageList[item[0]].length - 1]?.date
               }
               color={item?.color}
             />

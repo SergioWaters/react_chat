@@ -6,6 +6,7 @@
   min-height: fit-content;
   max-width: 60%;
   min-width: 200px;
+  position: relative;
 }
 
 .author {
@@ -31,4 +32,12 @@
   color: teal;
   font-size: 8px;
   line-height: 10px;
+}
+
+.deleteBtn {
+  cursor: pointer;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 3px 8px;
 }

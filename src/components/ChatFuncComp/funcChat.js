@@ -4,7 +4,7 @@ import { Message } from '../../components'
 import { Button, TextField } from '@material-ui/core'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
-import { addMsg } from "../../store/messages";
+import { addMsg, deleteMsg } from "../../store/messages";
 import { getDate, getId } from '../../resourses/helpers.js'
 
 export const FuncChat = () => {
@@ -35,6 +35,10 @@ export const FuncChat = () => {
       setText("");
     }
   };
+
+  const handler = (id) => {
+    if (id) dispatch(deleteMsg({ messId: id, contactId: contactId }));
+  }
 
   useEffect(() => {
     if (!contactList[contactId]) navigate('/chat/create')
@@ -68,18 +72,22 @@ export const FuncChat = () => {
           <span>{contactList[contactId] + " - " + contactId}</span>
           <span>{messages.length} messages total</span>
         </div>
+
         <div className={styles.messageList} ref={scrollRef}>
           {
             messages.map((message) =>
               <Message
                 key={message.id || getId()}
+                messId={message.id || getId()}
                 author={message.author}
                 text={message.text}
                 date={message.date || getDate()}
+                callBack={handler}
               />
             )
           }
         </div>
+
         <div className={styles.messageForm}>
           <TextField inputRef={inputRef}
             onChange={(e) => setText(e.target.value)}
