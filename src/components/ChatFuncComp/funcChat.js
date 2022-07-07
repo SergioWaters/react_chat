@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './index.module.css';
 import { Message } from '../../components'
 import { Button, TextField } from '@material-ui/core'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
 import { addMsg } from "../../store/messages";
 import { getDate, getId } from '../../resourses/helpers.js'
@@ -10,12 +10,10 @@ import { getDate, getId } from '../../resourses/helpers.js'
 export const FuncChat = () => {
 
   const { contactId } = useParams();
-
+  const navigate = useNavigate();
   const { messageList } = useSelector((store) => store.messages);
   const { contactList } = useSelector((store) => store.contacts);
-
   const [text, setText] = useState("");
-
   const dispatch = useDispatch();
 
   const inputRef = useRef();
@@ -37,6 +35,10 @@ export const FuncChat = () => {
       setText("");
     }
   };
+
+  useEffect(() => {
+    if (!contactList[contactId]) navigate('/chat/create')
+  }, [contactList, contactId, navigate]);
 
   useEffect(() => {
     const messArr = messageList[contactId] ?? [];

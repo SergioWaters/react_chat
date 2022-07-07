@@ -13,7 +13,6 @@ export const CreateChat = () => {
   const dispatch = useDispatch();
   const inputRef = useRef();
   const { contactList } = useSelector((store) => store.contacts)
-
   const [author, setAuthor] = useState('');
   const [id, setId] = useState('');
   const [text, setText] = useState('');

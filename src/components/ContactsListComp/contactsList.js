@@ -22,11 +22,6 @@ export const ChatList = ({ chatsArr }) => {
   const { messageList } = useSelector((store) => store.messages);
   const { contactList } = useSelector((store) => store.contacts);
 
-  // const [state, setState] = useState({
-  //   contactList,
-  //   messageList
-  // });
-  // useEffect(() => setState(state), [state, contact]);
   const classes = useStyles();
 
   return (
