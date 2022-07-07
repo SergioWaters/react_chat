@@ -17,8 +17,8 @@ export const contactsReducer = (state = initialState, action) => {
       return {
         ...state,
         contactList: {
-          ...state.contactList,
-          [payload.id]: payload.author
+          [payload.id]: payload.author,
+          ...state.contactList
         },
       }
     case DELETE_CHAT:

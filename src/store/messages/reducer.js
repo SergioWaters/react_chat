@@ -3,6 +3,7 @@ import {
   DELETE_MSG,
 } from "./types";
 import { chatsArr } from '../../resourses/chats.js';
+import { getDate, getId } from '../../resourses/helpers.js'
 
 const initialState = {
   messageList: Object.assign({}, ...chatsArr.map(chat => {
@@ -14,8 +15,8 @@ const getMsg = (p) => {
   return {
     author: p?.author,
     text: p?.text,
-    date: p?.date,
-    id: p?.id,
+    date: p.date || getDate(),
+    id: p.id || getId(),
   }
 }
 
@@ -28,10 +29,10 @@ export const messagesReducer = (state = initialState, action) => {
         messageList: {
           ...state.messageList,
           [payload.contactId]: [
-            ...state.messageList[payload.contactId], getMsg(payload)
+            ...(state.messageList[payload.contactId] || []), getMsg(payload)
           ]
         },
-      }
+      };
     case DELETE_MSG:
       return delete state.messageList[payload];
     default:

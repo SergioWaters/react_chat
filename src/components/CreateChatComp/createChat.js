@@ -5,23 +5,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { addChat } from "../../store/contacts";
 import { addMsg } from "../../store/messages";
 import { useNavigate } from "react-router-dom";
+import { getDate, getId } from '../../resourses/helpers.js'
 
-
-const getDate = () => {
-  return (new Date()).toLocaleString("ru-RU")
-}
-const getId = () => {
-  return Math.floor((Date.now() * Math.random()).toString())
-};
-
-export const CreateChat = ({ getChat, chatsArr }) => {
+export const CreateChat = () => {
 
   const navigate = useNavigate()
   const dispatch = useDispatch();
   const inputRef = useRef();
   const { contactList } = useSelector((store) => store.contacts)
 
-  const [authorsArr] = useState(contactList ?? chatsArr);
   const [author, setAuthor] = useState('');
   const [id, setId] = useState('');
   const [text, setText] = useState('');
@@ -35,24 +27,25 @@ export const CreateChat = ({ getChat, chatsArr }) => {
 
   const sendContact = () => {
     const sendTo = id || getId()
-    if (text && author)
+    if (text && author) {
       dispatch(addChat({
         id: sendTo,
         author: author
       }));
-    dispatch(addMsg({
-      contactId: sendTo,
-      author: 'Me',
-      text: text,
-      date: getDate(),
-      id: getId()
-    }))
+      dispatch(addMsg({
+        contactId: sendTo,
+        author: 'Me',
+        text: text,
+        date: getDate(),
+        id: getId()
+      }))
+    }
     navigate(`/chat/${sendTo}`)
   }
 
   useEffect(() => {
     inputRef.current?.focus();
-  }, [authorsArr]);
+  }, [contactList]);
 
   return (
     <>
@@ -60,7 +53,7 @@ export const CreateChat = ({ getChat, chatsArr }) => {
         Your common contacts:
         <List className={styles.list}>
           {
-            Object.entries(authorsArr).map((author) => {
+            Object.entries(contactList).map((author) => {
               return <ListItem
                 className={styles.listItem}
                 data-id={author[0]}
