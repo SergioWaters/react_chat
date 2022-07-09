@@ -1,4 +1,4 @@
-import React from 'react';
+import { React } from 'react';
 import {
   ListItem,
   Divider,
@@ -8,11 +8,14 @@ import {
   Avatar
 } from '@material-ui/core';
 
-export const Contact = ({ author, text, date }) => {
+export const Contact = ({ author, text, date, callBack, contactId, color }) => {
 
   return (
     <>
       <ListItem
+        style={{
+          backgroundColor: color
+        }}
         alignItems="flex-start">
         <ListItemAvatar>
           <Avatar style={{
@@ -37,6 +40,8 @@ export const Contact = ({ author, text, date }) => {
             </>
           }
         />
+        <span style={{ position: 'absolute', top: '0px', right: "3px", padding: '6px' }}
+          onClick={() => callBack(contactId)}>x</span>
       </ListItem >
       <Divider variant="inset" component="li" />
     </>

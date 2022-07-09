@@ -2,6 +2,7 @@ import {
   ADD_MSG,
   DELETE_MSG,
 } from "./types";
+import { DELETE_CHAT } from "../contacts";
 import { chatsArr } from '../../resourses/chats.js';
 import { getDate, getId } from '../../resourses/helpers.js'
 
@@ -41,6 +42,9 @@ export const messagesReducer = (state = initialState, action) => {
           [payload.contactId]: state.messageList[payload.contactId].filter((mess) => mess.id !== payload.messId)
         },
       };
+    case DELETE_CHAT:
+      delete state.messageList[payload.contactId];
+      return state;
     default:
       return state;
   }

@@ -22,7 +22,8 @@ export const contactsReducer = (state = initialState, action) => {
         },
       }
     case DELETE_CHAT:
-      return delete state.contactList[payload.id];
+      delete state.contactList[payload.contactId];
+      return state;
     default:
       return state;
   }

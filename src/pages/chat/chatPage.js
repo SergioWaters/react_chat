@@ -35,7 +35,11 @@ export const ChatPage = () => {
         element={
           <Layout
             chats={<ChatList />}
-            messages={<div>Choose contact to hangout with</div>}
+            messages={<div style={{
+              display: "flex",
+              alignItems: "center",
+              margin: "0 auto"
+            }}>Choose contact to hangout with</div>}
           />
         }
       />

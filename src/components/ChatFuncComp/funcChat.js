@@ -41,7 +41,7 @@ export const FuncChat = () => {
   }
 
   useEffect(() => {
-    if (!contactList[contactId]) navigate('/chat/create')
+    if (!contactList[contactId]) navigate('/chat')
   }, [contactList, contactId, navigate]);
 
   useEffect(() => {
