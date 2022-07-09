@@ -1,0 +1,23 @@
+.wrapper {}
+
+.body {
+  display: flex;
+  box-sizing: border-box;
+}
+
+.content {
+  display: flex;
+  height: 90vh;
+}
+
+.chats {
+  overflow-y: auto;
+  width: 37ch;
+}
+
+.messages {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  color: #008080;
+}
