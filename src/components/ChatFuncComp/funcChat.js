@@ -4,17 +4,17 @@ import { Message } from '../../components'
 import { Button, TextField } from '@material-ui/core'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
-import { addMsg, deleteMsg } from "../../store/messages";
+import { addMsgMidWare, deleteMsg } from "../../store/messages";
 import { getDate, getId } from '../../resourses/helpers.js'
 
 export const FuncChat = () => {
 
-  const { contactId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { contactId } = useParams();
   const { messageList } = useSelector((store) => store.messages);
   const { contactList } = useSelector((store) => store.contacts);
   const [text, setText] = useState("");
-  const dispatch = useDispatch();
 
   const inputRef = useRef();
   const scrollRef = useRef();
@@ -24,14 +24,14 @@ export const FuncChat = () => {
     scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight);
   }, [messageList]);
 
-  const updateMessageList = (text, author) => {
+  const updateMessageList = (author) => {
     const mess = {
       author: author || 'Me',
       text,
       id: getId(),
     };
     if (text) {
-      dispatch(addMsg({ ...mess, contactId: contactId }));
+      dispatch(addMsgMidWare({ ...mess, contactId: contactId }));
       setText("");
     }
   };
@@ -43,25 +43,6 @@ export const FuncChat = () => {
   useEffect(() => {
     if (!contactList[contactId]) navigate('/chat')
   }, [contactList, contactId, navigate]);
-
-  useEffect(() => {
-    const messArr = messageList[contactId] ?? [];
-    const lastMessage = messArr[messArr.length - 1];
-
-    let timerId = null;
-    const chatBot = {
-      author: "Vlad-bot",
-      text: "Have no fear, Vlad is here!",
-    };
-    if (messArr.length && lastMessage.author !== "Vlad-bot" && contactId === 'bot') {
-      timerId = setTimeout(() => {
-        dispatch(addMsg({ ...chatBot, contactId: contactId }));
-      }, 1500);
-    }
-    return () => {
-      clearInterval(timerId);
-    };
-  }, [messageList, contactId, dispatch]);
 
   const messages = messageList[contactId] ?? [];
   return (
@@ -100,7 +81,7 @@ export const FuncChat = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => updateMessageList(text)}
+            onClick={() => updateMessageList()}
             className={styles.input}
           >
             send
