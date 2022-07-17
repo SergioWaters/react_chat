@@ -1,7 +1,9 @@
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import { profileReducer } from "./profile";
 import { contactsReducer } from "./contacts";
 import { messagesReducer } from "./messages";
+import thunk from 'redux-thunk';
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(
   combineReducers({
@@ -9,7 +11,8 @@ export const store = createStore(
     contacts: contactsReducer,
     messages: messagesReducer,
   }),
-  window.__REDUX_DEVTOOLS_EXTENSION__
-    ? window.__REDUX_DEVTOOLS_EXTENSION__()
-    : (args) => args
-);
+  compose(applyMiddleware(thunk),
+    window.__REDUX_DEVTOOLS_EXTENSION__
+      ? window.__REDUX_DEVTOOLS_EXTENSION__()
+      : (args) => args
+  ));
