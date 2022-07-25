@@ -11,7 +11,7 @@ export const FirstComp = (props) => {
 
 
         <Greetings msg={msg} />
-        <h3>From {props.name}</h3>
+        <h3> {props.name}</h3>
       </header>
     </div>
   );

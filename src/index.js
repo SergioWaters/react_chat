@@ -2,12 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
+import { PersistGate } from "redux-persist/integration/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProfilePage, ChatPage } from "./pages";
 import { FirstComp, Header } from './components'
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import { Provider } from 'react-redux';
-import { store } from './store';
+import { store, persistor } from './store';
 
 const chatTheme = createTheme({
   palette: {
@@ -21,24 +22,26 @@ const chatTheme = createTheme({
 });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const someName = 'This Page Does not Exist'
+const someMessage = 'This Page Does not Exist'
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={chatTheme}>
-        <BrowserRouter>
+      <PersistGate persistor={persistor}>
+        <ThemeProvider theme={chatTheme}>
+          <BrowserRouter>
 
-          <Header />
+            <Header />
 
-          <Routes>
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/chat/*" element={<ChatPage />} />
-            <Route exact path="/" element={<ProfilePage />} />
-            <Route path="*" element={<FirstComp name={someName} />} />
-          </Routes>
+            <Routes>
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/chat/*" element={<ChatPage />} />
+              <Route exact path="/" element={<ProfilePage />} />
+              <Route path="*" element={<FirstComp name={someMessage} />} />
+            </Routes>
 
-        </BrowserRouter>
-      </ThemeProvider>
+          </BrowserRouter>
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );

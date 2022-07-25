@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import { profileReducer } from "./profile";
 import { contactsReducer } from "./contacts";
 import { messagesReducer } from "./messages";
-// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+import createSagaMiddleware from 'redux-saga'
 
 const persistConfig = {
   key: "root",
@@ -19,13 +19,15 @@ const rootReducer = combineReducers({
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
+const sagaMiddleware = createSagaMiddleware()
 
 export const store = createStore(
   persistedReducer,
-  compose(applyMiddleware(thunk),
+  compose(
+    applyMiddleware(thunk, sagaMiddleware),
     window.__REDUX_DEVTOOLS_EXTENSION__
       ? window.__REDUX_DEVTOOLS_EXTENSION__()
       : (args) => args
-  ));
-
+  )
+);
 export const persistor = persistStore(store);

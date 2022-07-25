@@ -1,9 +1,10 @@
+import { React } from 'react';
 import { Contact } from './Contact';
 import { deleteChat } from '../../store/contacts';
-import { React } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { allMessagesSelector } from "../../store/messages";
 import List from '@material-ui/core/List';
 
 
@@ -21,7 +22,7 @@ export const ChatList = () => {
 
   const dispatch = useDispatch()
   const { contactId } = useParams();
-  const { messageList } = useSelector((store) => store.messages);
+  const messageList = useSelector(allMessagesSelector());
   const { contactList } = useSelector((store) => store.contacts);
   const classes = useStyles();
 
@@ -29,9 +30,13 @@ export const ChatList = () => {
     dispatch(deleteChat({ contactId: id }))
   }
 
-  const getColor = (id) => {
+  const getMessageColor = (id) => {
     if (contactId === id) return '#00808066';
     else return 'inherit';
+  }
+
+  const getLastMessage = (id, key) => {
+    return messageList[id]?.[messageList[id].length - 1]?.[key]
   }
 
   return (
@@ -49,13 +54,9 @@ export const ChatList = () => {
               callBack={handler}
               author={item[1]}
               contactId={item[0]}
-              text={
-                messageList[item[0]][messageList[item[0]].length - 1]?.text
-              }
-              date={
-                messageList[item[0]][messageList[item[0]].length - 1]?.date
-              }
-              color={getColor(item[0])}
+              text={getLastMessage(item[0], 'text')}
+              date={getLastMessage(item[0], 'date')}
+              color={getMessageColor(item[0])}
             />
           </Link >
         )
