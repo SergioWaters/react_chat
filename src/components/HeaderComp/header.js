@@ -213,6 +213,13 @@ export const Header = ({ clickHandlerPr }) => {
               </Link>
             </IconButton>
           </div>
+          <Link to="/gists" style={{ textDecoration: 'none', color: 'inherit' }}>
+            gist API
+          </Link>
+          <Link to="/axios" style={{ textDecoration: 'none', color: 'inherit' }}>
+            gist API with Axios
+          </Link>
+
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label="show more"

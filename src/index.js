@@ -4,7 +4,7 @@ import reportWebVitals from './reportWebVitals';
 import './index.css';
 import { PersistGate } from "redux-persist/integration/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ProfilePage, ChatPage } from "./pages";
+import { ProfilePage, ChatPage, GistsList, AxiosGists } from "./pages";
 import { FirstComp, Header } from './components'
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import { Provider } from 'react-redux';
@@ -33,6 +33,8 @@ root.render(
             <Header />
 
             <Routes>
+              <Route path="/gists" element={<GistsList />} />
+              <Route path="/axios" element={<AxiosGists />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/chat/*" element={<ChatPage />} />
               <Route exact path="/" element={<ProfilePage />} />
