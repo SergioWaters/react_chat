@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import debounce from "lodash.debounce";
 import { getGists, getGistsByName } from "../../store/gists";
+import { firebase } from "../../api/firebase.js"
 
 const searchGistsDebounced = debounce((query, dispatch) => {
   dispatch(getGistsByName(query));
@@ -33,7 +34,6 @@ export const AxiosGists = () => {
   return (
     <div>
       <h1>Gists page</h1>
-
       <div style={{ display: "flex", minWidth: '50%' }}>
         <div>
           {pending ? (

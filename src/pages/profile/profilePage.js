@@ -1,41 +1,20 @@
-import {
-  Button,
-  TextField,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Checkbox
-} from "@material-ui/core";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateProfile, toggleVisibleProfile } from "../../store/profile";
+import { } from "../../store/profile";
+import { FormComp } from '../../components'
 import styles from './index.module.css';
 
-export const ProfilePage = () => {
-
-  const {
-    firstName,
-    lastName,
-    radio,
-    isVisibleProfile } = useSelector((state) => state.profile);
-
-  const [form, setForm] = useState({
-    firstName,
-    lastName,
-    radio,
-    isVisibleProfile
-  });
-
+export const ProfilePage = (session) => {
   const dispatch = useDispatch();
+  const {
+    profile,
+    errorUpdate,
+    pendingUpdate } = useSelector((s) => s.profile);
 
-  const handleChangeForm = (event) => {
-    const field = event.target.getAttribute("data-name");
-    if (!!field) {
-      setForm({
-        ...form,
-        [field]: event.target.value,
-      });
+  const profileForm = getProfileFarmElements(profile)
+
+  const onSubmit = (form) => {
+    if (form) {
+
     }
   };
 
@@ -44,74 +23,20 @@ export const ProfilePage = () => {
 
       <h1>Edit profile</h1>
 
-      <TextField className={styles.input}
-        // inputRef={inputRef}
-        onChange={handleChangeForm}
-        id="standard-textarea"
-        label="Put your name"
-        value={form.firstName}
-        inputProps={{
-          "data-name": "firstName",
-        }}
-      />
+      {errorUpdate && <h3>{errorUpdate.message}</h3>}
+      {pendingUpdate && <h3>Waiting...</h3>}
 
-      <TextField className={styles.input}
-        onChange={handleChangeForm}
-        id="standard-textarea"
-        label="Put your last name"
-        value={form.lastName}
-        inputProps={{
-          "data-name": "lastName",
-        }}
-      />
+      <FormComp elementsArr={profileForm} onSubmit={onSubmit} />
 
-      <FormControl>
-        <RadioGroup row
-          value={form.radio}
-          onChange={handleChangeForm}
-        >
-          <FormControlLabel
-            label="Male"
-            value='male'
-            control={
-              <Radio
-                color="primary"
-                inputProps={{
-                  "data-name": "radio",
-                }}
-              />}
-          />
-          <FormControlLabel
-            label="Female"
-            value='female'
-            control={
-              <Radio
-                color="primary"
-                inputProps={{
-                  "data-name": "radio",
-                }}
-              />}
-          />
-        </RadioGroup>
-      </FormControl>
 
-      <FormControlLabel
-        label="Checkbox"
-        control={
-          <Checkbox
-            onChange={() => dispatch(toggleVisibleProfile())}
-            checked={isVisibleProfile}
-            color="primary"
-            inputProps={{
-              "data-name": "isVisibleProfile",
-            }}
-          />
-        } />
-
-      <Button
-        onClick={() => dispatch(updateProfile(form))}
-        variant="contained"
-        color="primary">save</Button>
-    </div >
-  );
+    </div>)
 };
+
+function getProfileFarmElements(user) {
+  console.log(user)
+  if (user) {
+    return Object.entries(user).map(u => {
+      return { value: u[1], attr: u[0] }
+    })
+  }
+}

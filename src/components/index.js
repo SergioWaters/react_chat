@@ -7,6 +7,6 @@ export * from './MessageComp'
 export * from './HeaderComp'
 export * from './ContactsListComp'
 export * from './CreateChatComp'
-
-
-
+export * from './RoutesComp'
+export * from './FormComp'
+export * from './SearchUserComp'

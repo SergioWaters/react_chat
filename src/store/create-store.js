@@ -3,15 +3,33 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import thunk from 'redux-thunk';
 import { getPublicGistsApi, getGistsByNameApi } from "../api/gists";
+import {
+  getContactsApi,
+  createContactApi,
+  removeContactApi
+} from '../api/contacts';
+import {
+  getMessagesApi,
+  createMessageApi,
+  removeMessageApi,
+  removeAllMessagesApi
+} from '../api/messages';
+import {
+  getProfileApi,
+  updateProfileApi,
+  removeProfileApi,
+  createProfileApi
+} from '../api/profile';
 import { profileReducer } from "./profile";
 import { contactsReducer } from "./contacts";
 import { messagesReducer } from "./messages";
-import { gistsReducer } from "./gists"
-import createSagaMiddleware from 'redux-saga'
+import { gistsReducer } from "./gists";
+import createSagaMiddleware from 'redux-saga';
 
 const persistConfig = {
   key: "root",
   storage,
+  blacklist: ['contacts', 'messages', 'profile']
 };
 
 const rootReducer = combineReducers({
@@ -22,8 +40,22 @@ const rootReducer = combineReducers({
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-const sagaMiddleware = createSagaMiddleware()
-const api = { getPublicGistsApi, getGistsByNameApi };//getPublicGistsApi('page number'), getGistsByNameApi('user name to find gists')
+const sagaMiddleware = createSagaMiddleware();
+const api = {
+  getPublicGistsApi,
+  getGistsByNameApi,
+  getContactsApi,
+  createContactApi,
+  removeContactApi,
+  getMessagesApi,
+  createMessageApi,
+  removeMessageApi,
+  removeAllMessagesApi,
+  updateProfileApi,
+  getProfileApi,
+  removeProfileApi,
+  createProfileApi
+};
 
 export const store = createStore(
   persistedReducer,

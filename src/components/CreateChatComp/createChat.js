@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './index.module.css';
 import { Button, TextField, ListItem, List } from '@material-ui/core'
 import { useDispatch, useSelector } from "react-redux";
-import { addChat } from "../../store/contacts";
-import { addMsg } from "../../store/messages";
+import { createContact } from "../../store/contacts";
+// import { addMsg } from "../../store/messages";
 import { useNavigate } from "react-router-dom";
 import { getDate, getId } from '../../resourses/helpers.js'
 
@@ -24,20 +24,14 @@ export const CreateChat = () => {
     setAuthor(author);
   }
 
-  const sendContact = () => {
-    const sendTo = id || getId()
-    if (text && author) {
-      dispatch(addChat({
+  const sendContact = async () => {
+    const sendTo = Object.keys(contactList).includes(id) ? id : getId();
+    if (author && sendTo) {
+      dispatch(createContact({
         id: sendTo,
         author: author
-      }));
-      dispatch(addMsg({
-        contactId: sendTo,
-        author: 'Me',
-        text: text,
-        date: getDate(),
-        id: getId()
-      }))
+      }
+      ));
     }
     navigate(`/chat/${sendTo}`)
   }

@@ -20,7 +20,7 @@ export const Contact = ({ author, text, date, callBack, contactId, color }) => {
         <ListItemAvatar>
           <Avatar style={{
             // backgroundColor: props?.color
-          }}>{author[0]}</Avatar>
+          }}>{author?.[0]}</Avatar>
         </ListItemAvatar>
         <ListItemText
           component="div"
@@ -40,8 +40,8 @@ export const Contact = ({ author, text, date, callBack, contactId, color }) => {
             </>
           }
         />
-        <span style={{ position: 'absolute', top: '0px', right: "3px", padding: '6px' }}
-          onClick={() => callBack(contactId)}>x</span>
+        <span style={{ position: 'absolute', top: '0px', right: "3px", padding: '10px' }}
+          onClick={(e) => callBack(contactId, e)}>x</span>
       </ListItem >
       <Divider variant="inset" component="li" />
     </>

@@ -1,12 +1,12 @@
-import { React } from 'react';
+import { React, useEffect } from 'react';
 import { Contact } from './Contact';
-import { deleteChat } from '../../store/contacts';
-import { makeStyles } from '@material-ui/core/styles';
-import { Link, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { allMessagesSelector } from "../../store/messages";
-import List from '@material-ui/core/List';
+import { SearchUser } from '../'
 
+import { makeStyles } from '@material-ui/core/styles';
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { getContacts, deleteContact } from '../../store/contacts'
+import List from '@material-ui/core/List';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -19,15 +19,17 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const ChatList = () => {
-
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { contactId } = useParams();
-  const messageList = useSelector(allMessagesSelector());
-  const { contactList } = useSelector((store) => store.contacts);
+  const { messageList } = useSelector((store) => store.messages);
+  const { contactList, pendingGet, errorGet } = useSelector((store) => store.contacts);
   const classes = useStyles();
 
-  const handler = (id) => {
-    dispatch(deleteChat({ contactId: id }))
+  const deleteContact = async (contact, e) => {
+    e.preventDefault();
+    dispatch(deleteContact(contact));
+    navigate('/#');
   }
 
   const getMessageColor = (id) => {
@@ -36,12 +38,21 @@ export const ChatList = () => {
   }
 
   const getLastMessage = (id, key) => {
-    return messageList[id]?.[messageList[id].length - 1]?.[key]
+    return messageList[id]?.[-1]?.[key]
   }
+
+  useEffect(() => {
+    if (!Object.keys(contactList).length) {
+      dispatch(getContacts());
+    }
+  }, [dispatch, contactList]);
 
   return (
     <List className={classes.root}>
-      {
+      <SearchUser />
+      {pendingGet && <h3>{pendingGet}</h3>}
+      {errorGet && <h3>{errorGet.message}</h3>}
+      {(!pendingGet || !errorGet) &&
         Object.entries(contactList).map((item) =>
           <Link to={`/chat/${item[0]}`}
             key={item[0]}
@@ -51,9 +62,9 @@ export const ChatList = () => {
             }}
           >
             <Contact
-              callBack={handler}
-              author={item[1]}
+              callBack={deleteContact}
               contactId={item[0]}
+              author={item[1]}
               text={getLastMessage(item[0], 'text')}
               date={getLastMessage(item[0], 'date')}
               color={getMessageColor(item[0])}
