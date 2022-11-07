@@ -9,6 +9,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./api/firebase";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import { RoutesComp, Header } from './components'
+
 import './index.css';
 
 const chatTheme = createTheme({
@@ -38,7 +39,7 @@ const App = () => {
   }, []);
 
   return (
-    <Provider store={store}>
+    <Provider store={store} session={session}>
       <PersistGate persistor={persistor}>
         <ThemeProvider theme={chatTheme}>
           <BrowserRouter>

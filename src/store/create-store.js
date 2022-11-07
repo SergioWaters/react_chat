@@ -29,7 +29,7 @@ import createSagaMiddleware from 'redux-saga';
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ['contacts', 'messages', 'profile']
+  blacklist: ['contacts', 'messages']
 };
 
 const rootReducer = combineReducers({

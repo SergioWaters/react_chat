@@ -10,6 +10,7 @@ export const createProfileApi = (user) => {
 };
 
 export const getProfileApi = (uid) => {
+  console.log(uid, '---from getprofapi')
   return getDoc(doc(firestore, 'users', uid));
 };
 

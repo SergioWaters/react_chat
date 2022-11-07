@@ -24,9 +24,11 @@ export const FormComp = ({ elementsArr, onSubmit }) => {
       {elementsArr.map(i => {
         return (
           <TextField
+            helperText={i.label}
             key={i.attr}
             style={{ margin: 5 }}
-            label={i.value}
+            label={i.value || i.label}
+            value={i.value}
             inputProps={{
               'data-name': i.attr
             }}

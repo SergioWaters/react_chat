@@ -1,20 +1,53 @@
 import { useDispatch, useSelector } from "react-redux";
-import { } from "../../store/profile";
-import { FormComp } from '../../components'
+import { getProfile, updateProfile } from "../../store/profile";
+import { FormComp } from '../../components';
 import styles from './index.module.css';
+import { auth } from "../../api/firebase";
+import { useEffect } from "react";
 
-export const ProfilePage = (session) => {
+export const ProfilePage = () => {
   const dispatch = useDispatch();
   const {
     profile,
     errorUpdate,
     pendingUpdate } = useSelector((s) => s.profile);
 
-  const profileForm = getProfileFarmElements(profile)
+  useEffect(() => {
+    if (!profile.email)
+      dispatch(getProfile(auth.currentUser.uid))
+  }, [dispatch, profile])
+
+  const profileForm = () => {
+    return [
+      {
+        attr: 'email',
+        value: profile.email,
+        label: 'email'
+      },
+      {
+        attr: 'displayName',
+        value: profile.displayName,
+        label: 'nickname'
+      },
+      {
+        attr: 'photoURL',
+        value: profile.photoURL,
+        label: 'link to photo'
+      },
+      {
+        attr: 'phoneNumber',
+        value: profile.phoneNumber,
+        label: 'phone number'
+      }
+    ]
+  }
 
   const onSubmit = (form) => {
     if (form) {
-
+      const updatedUser = {
+        ...form, uid: profile.uid
+      }
+      dispatch(updateProfile(updatedUser))
     }
   };
 
@@ -26,17 +59,7 @@ export const ProfilePage = (session) => {
       {errorUpdate && <h3>{errorUpdate.message}</h3>}
       {pendingUpdate && <h3>Waiting...</h3>}
 
-      <FormComp elementsArr={profileForm} onSubmit={onSubmit} />
-
+      <FormComp elementsArr={profileForm()} onSubmit={onSubmit} />
 
     </div>)
 };
-
-function getProfileFarmElements(user) {
-  console.log(user)
-  if (user) {
-    return Object.entries(user).map(u => {
-      return { value: u[1], attr: u[0] }
-    })
-  }
-}

@@ -32,6 +32,7 @@ const initialState = {
 };
 
 export const profileReducer = (state = initialState, action) => {
+  console.log(action)
   const payload = action.payload
   switch (action.type) {
     //get
@@ -42,11 +43,12 @@ export const profileReducer = (state = initialState, action) => {
         errorGet: null,
       };
     case GET_PROFILE_SUCCESS:
+      console.log('from switch profile --- ', payload)
       return {
         ...state,
         pendingGet: false,
         errorGet: null,
-        profile: payload
+        profile: { ...payload }
       };
     case GET_PROFILE_ERROR:
       return {

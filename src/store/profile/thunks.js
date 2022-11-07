@@ -13,13 +13,13 @@ import {
   removeProfileError,
 } from "./actions";
 
-export const getProfile = (id) => async (dispatch, _, api) => {
+export const getProfile = (uid) => async (dispatch, _, api) => {
   try {
     dispatch(getProfileStart());
 
-    await api.getProfileApi(id); //@@TODO
+    const profile = await api.getProfileApi(uid); //@@TODO
 
-    dispatch(getProfileSuccess(id));
+    dispatch(getProfileSuccess(profile.data()));
   } catch (e) {
     dispatch(getProfileError(e));
   }
@@ -37,14 +37,13 @@ export const createProfile = (contact) => async (dispatch, _, api) => {
   }
 };
 
-export const updateProfile = (uid) => async (dispatch, _, api) => {
-  let contacts = {};
+export const updateProfile = (profile) => async (dispatch, _, api) => {
   try {
     dispatch(updateProfileStart());
 
-    await api.updateProfile(uid) //@@TODO
+    await api.updateProfileApi(profile) //@@TODO
 
-    dispatch(updateProfileSuccess(contacts));
+    dispatch(updateProfileSuccess(profile));
   } catch (e) {
     dispatch(updateProfileError(e));
   }
