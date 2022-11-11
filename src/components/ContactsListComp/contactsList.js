@@ -1,12 +1,13 @@
-import { React, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Contact } from './Contact';
 import { SearchUser } from '../'
-
+import { subForUserChats } from '../../api'
 import { makeStyles } from '@material-ui/core/styles';
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getContacts, deleteContact } from '../../store/contacts'
+import { getContacts, removeContact } from '../../store/contacts'
 import List from '@material-ui/core/List';
+import { onSnapshot } from 'firebase/firestore';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -28,13 +29,14 @@ export const ChatList = () => {
 
   const deleteContact = async (contact, e) => {
     e.preventDefault();
-    dispatch(deleteContact(contact));
+    dispatch(removeContact(contact));
     navigate('/#');
   }
 
   const getMessageColor = (id) => {
-    if (contactId === id) return '#00808066';
-    else return 'inherit';
+    return (contactId === id) ?
+      '#00808066' :
+      'inherit';
   }
 
   const getLastMessage = (id, key) => {
@@ -42,9 +44,8 @@ export const ChatList = () => {
   }
 
   useEffect(() => {
-    if (!Object.keys(contactList).length) {
-      dispatch(getContacts());
-    }
+    // onSnapshot()
+    // dispatch(getContacts())
   }, [dispatch, contactList]);
 
   return (
@@ -54,20 +55,21 @@ export const ChatList = () => {
       {errorGet && <h3>{errorGet.message}</h3>}
       {(!pendingGet || !errorGet) &&
         Object.entries(contactList).map((item) =>
-          <Link to={`/chat/${item[0]}`}
-            key={item[0]}
+          <Link to={`/chat/${item.uid}`}
+            key={item.uid}
             style={{
               textDecoration: 'none',
               color: 'inherit',
             }}
           >
             <Contact
+              key={item.uid}
               callBack={deleteContact}
-              contactId={item[0]}
-              author={item[1]}
-              text={getLastMessage(item[0], 'text')}
-              date={getLastMessage(item[0], 'date')}
-              color={getMessageColor(item[0])}
+              contactId={item.uid}
+              author={item.displayName || item.email}
+              // text={getLastMessage(item[0], 'text')}
+              // date={getLastMessage(item[0], 'date')}
+              color={getMessageColor(item.uid)}
             />
           </Link >
         )
@@ -75,3 +77,8 @@ export const ChatList = () => {
     </List >
   );
 }
+
+// uid:"pIQJ75w6xNhrNLhmjNCROwLInnq1"
+// email:"as@as.com"
+// phoneNumber:"+89012345678"
+// displayName:"Sergio"

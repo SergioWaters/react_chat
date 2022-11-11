@@ -27,7 +27,7 @@ export const contactsReducer = (state = initialState, action) => {
     case GET_CONTACTS_START:
       return { ...state, pendingGet: true, errorGet: null };
     case GET_CONTACTS_SUCCESS:
-      return { ...state, pendingGet: false, contactList: payload };
+      return { ...state, pendingGet: false, contactList: { ...payload } };
     case GET_CONTACTS_ERROR:
       return { ...state, pendingGet: false, errorGet: payload };
 
@@ -39,7 +39,7 @@ export const contactsReducer = (state = initialState, action) => {
         ...state,
         pendingCreate: false,
         errorCreate: null,
-        contactList: { ...state.contactList, [payload.uid]: payload.author },
+        contactList: { ...state.contactList, [payload.uid]: payload },
       };
     case CREATE_CONTACT_ERROR:
       return { ...state, pendingCreate: false, errorCreate: payload };

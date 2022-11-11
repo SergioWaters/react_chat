@@ -15,10 +15,9 @@ export const getContacts = () => async (dispatch, _, api) => {
   try {
     dispatch(getContactsStart());
 
-    const snapshot = await api.getContactsApi();
+    const snapshot = await api.subForUserChatsApi();
     snapshot.forEach((snap) => {
-      const { uid, email } = snap.data();
-      contacts[uid] = email;
+      console.log('snap cont thunk --- ', snap.data())
     });
 
     dispatch(getContactsSuccess(contacts));

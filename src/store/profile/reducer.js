@@ -32,7 +32,6 @@ const initialState = {
 };
 
 export const profileReducer = (state = initialState, action) => {
-  console.log(action)
   const payload = action.payload
   switch (action.type) {
     //get
@@ -67,7 +66,7 @@ export const profileReducer = (state = initialState, action) => {
       return {
         ...state,
         pendingUpdate: false,
-        errorUpdate: null,
+        errorUpdate: 'Your profile updated',
         profile: payload
       };
     case UPDATE_PROFILE_ERROR:

@@ -17,7 +17,8 @@ export const getProfile = (uid) => async (dispatch, _, api) => {
   try {
     dispatch(getProfileStart());
 
-    const profile = await api.getProfileApi(uid); //@@TODO
+    const profile = await api.getProfileApi(uid);
+    console.log('from getProfile thunk --- ', profile.data())
 
     dispatch(getProfileSuccess(profile.data()));
   } catch (e) {
@@ -29,7 +30,8 @@ export const createProfile = (contact) => async (dispatch, _, api) => {
   try {
     dispatch(createProfileStart());
 
-    await api.createProfileApi(contact); //@@TODO
+    await api.createProfileApi(contact);
+    await api.createProfileContacts(contact.uid);
 
     dispatch(createProfileSuccess(contact));
   } catch (e) {
@@ -41,7 +43,7 @@ export const updateProfile = (profile) => async (dispatch, _, api) => {
   try {
     dispatch(updateProfileStart());
 
-    await api.updateProfileApi(profile) //@@TODO
+    await api.updateProfileApi(profile)
 
     dispatch(updateProfileSuccess(profile));
   } catch (e) {
@@ -53,7 +55,7 @@ export const removeProfile = (contact) => async (dispatch, _, api) => {
   try {
     dispatch(removeProfileStart());
 
-    await api.removeProfileApi(contact); //@@TODO
+    await api.removeProfileApi(contact);
 
     dispatch(removeProfileSuccess(contact));
   } catch (e) {

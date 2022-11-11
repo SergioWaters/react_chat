@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { alpha, makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, IconButton, Typography, Menu, MenuItem } from '@material-ui/core/';
 import { RateReview, AccountCircle, Mail, MoreVert } from '@material-ui/icons';
 import { signOut } from 'firebase/auth'
 import { auth } from "../../api/firebase";
+import { useDispatch } from 'react-redux';
+import { getProfile } from '../../store/profile';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -70,13 +72,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Header = ({ session }) => {
-
+  const dispatch = useDispatch()
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  useEffect(() => {
+    session && dispatch(getProfile(session.uid))
+  })
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);

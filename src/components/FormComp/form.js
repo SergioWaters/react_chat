@@ -28,7 +28,7 @@ export const FormComp = ({ elementsArr, onSubmit }) => {
             key={i.attr}
             style={{ margin: 5 }}
             label={i.value || i.label}
-            value={i.value}
+            // value={i.value}
             inputProps={{
               'data-name': i.attr
             }}

@@ -10,7 +10,7 @@ import {
   createMessage,
   updateMessagesOnChange,
 } from "../../store/messages";
-import { onMessagesAddedApi } from '../../api/messages';
+import { onMessagesAddedApi } from '../../api/messagesApi';
 import { getDate, getId } from '../../resourses/helpers.js'
 // import { onValue, onChildAdded, ref, child } from 'firebase/database'
 // import { database } from "../../api/firebase";
@@ -36,8 +36,16 @@ export const FuncChat = () => {
 
   useEffect(() => {
     dispatch(updateMessagesOnChange(contactId))
-    // || onValue()
-    // if (!messages.length) dispatch(getMessages(contactId));
+
+    // useEffect(() => {
+    // const unSub = onSnapshot(doc(db, "chats", contactId), (doc) => {
+    // doc.exists() && setMessages(doc.data().messages);
+    // });
+    // 
+    // return () => {
+    // unSub();
+    // };
+    // }, [data.chatId]);
 
     inputRef.current?.focus();
     scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight);
@@ -69,17 +77,17 @@ export const FuncChat = () => {
 
       <div className={styles.messageList} ref={scrollRef}>
         {
-          (!messages) ? <h5>No messages yet</h5> :
-            messages.map((message) =>
-              <Message
-                key={message.id || getId()}
-                messId={message.id || getId()}
-                author={message.author}
-                text={message.text}
-                date={message.date || getDate()}
-                callBack={handler}
-              />
-            )
+          // (!messages) ? <h5>No messages yet</h5> :
+          // messages.map((message) =>
+          //   <Message
+          //     key={message.id || getId()}
+          //     messId={message.id || getId()}
+          //     author={message.author}
+          //     text={message.text}
+          //     date={message.date || getDate()}
+          //     callBack={handler}
+          //   />
+          // )
         }
       </div>
 

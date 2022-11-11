@@ -7,19 +7,19 @@ import {
   getContactsApi,
   createContactApi,
   removeContactApi
-} from '../api/contacts';
+} from '../api/contactsApi';
 import {
   getMessagesApi,
   createMessageApi,
   removeMessageApi,
   removeAllMessagesApi
-} from '../api/messages';
+} from '../api/messagesApi';
 import {
   getProfileApi,
   updateProfileApi,
   removeProfileApi,
   createProfileApi
-} from '../api/profile';
+} from '../api/profileApi';
 import { profileReducer } from "./profile";
 import { contactsReducer } from "./contacts";
 import { messagesReducer } from "./messages";
@@ -29,7 +29,7 @@ import createSagaMiddleware from 'redux-saga';
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ['contacts', 'messages']
+  blacklist: ['contacts', 'messages', 'profile']
 };
 
 const rootReducer = combineReducers({

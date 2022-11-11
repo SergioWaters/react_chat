@@ -10,9 +10,12 @@ import { FormComp } from "../../components";
 import { useState } from "react";
 import { doc, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { createProfileApi } from "../../api";
 
 export const SignupPage = () => {
   const [error, setError] = useState('');
+  const dispatch = useDispatch()
 
   const onSubmit = async ({
     email,
@@ -26,15 +29,15 @@ export const SignupPage = () => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
-      await setDoc(doc(firestore, "users", res.user.uid), {
-        uid: res.user.uid,
-        email,
-        displayName,
-        photoURL,
-        phoneNumber,
-      });
-
-      await setDoc(doc(firestore, "userChats", res.user.uid), {});
+      dispatch(createProfileApi(
+        {
+          uid: res.user.uid,
+          email: email,
+          displayName: displayName,
+          photoURL: photoURL,
+          phoneNumber: phoneNumber,
+        }
+      ))
 
     } catch (error) {
       setError(getErrorMessage(error.message));

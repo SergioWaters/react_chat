@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile, updateProfile } from "../../store/profile";
 import { FormComp } from '../../components';
-import styles from './index.module.css';
 import { auth } from "../../api/firebase";
 import { useEffect } from "react";
+import styles from './index.module.css';
 
 export const ProfilePage = () => {
   const dispatch = useDispatch();
@@ -13,8 +13,9 @@ export const ProfilePage = () => {
     pendingUpdate } = useSelector((s) => s.profile);
 
   useEffect(() => {
-    if (!profile.email)
-      dispatch(getProfile(auth.currentUser.uid))
+    const id = auth.currentUser.uid
+    if (profile.email === null)
+      dispatch(getProfile(id))
   }, [dispatch, profile])
 
   const profileForm = () => {
@@ -56,8 +57,8 @@ export const ProfilePage = () => {
 
       <h1>Edit profile</h1>
 
-      {errorUpdate && <h3>{errorUpdate.message}</h3>}
       {pendingUpdate && <h3>Waiting...</h3>}
+      {errorUpdate && <h3>{errorUpdate.message || errorUpdate}</h3>}
 
       <FormComp elementsArr={profileForm()} onSubmit={onSubmit} />
 

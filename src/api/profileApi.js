@@ -4,8 +4,11 @@ import {
 } from 'firebase/firestore';
 import { firestore } from "./firebase";
 
+export const createProfileContacts = (uid) => {
+  return setDoc(doc(firestore, "userChats", uid), {});
+}
+
 export const createProfileApi = (user) => {
-  if (!user) user = {};
   return setDoc(doc(firestore, 'users', user.uid), user);
 };
 

@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from './store';
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./api/firebase";
+import { auth } from "./api";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import { RoutesComp, Header } from './components'
 
@@ -31,6 +31,7 @@ const App = () => {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log('onAuthChange fron index --- ', user)
         setSession(user);
       } else {
         setSession(null);
