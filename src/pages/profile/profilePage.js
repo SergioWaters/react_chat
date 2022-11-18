@@ -1,8 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
-import { getProfile, updateProfile } from "../../store/profile";
+import {
+  // getProfile, 
+  updateProfile
+} from "../../store/profile";
 import { FormComp } from '../../components';
-import { auth } from "../../api/firebase";
-import { useEffect } from "react";
+// import { auth } from "../../api/firebase";
+import { useEffect, useState } from "react";
+import { profileForm } from './lib'
 import styles from './index.module.css';
 
 export const ProfilePage = () => {
@@ -11,40 +15,21 @@ export const ProfilePage = () => {
     profile,
     errorUpdate,
     pendingUpdate } = useSelector((s) => s.profile);
+  const [message, setMessage] = useState('Hello ' + profile?.displayName)
+
+  // useEffect(() => {
+  //   const id = auth.currentUser.uid
+  //   dispatch(getProfile(id))
+  // }, [dispatch, profile]);
 
   useEffect(() => {
-    const id = auth.currentUser.uid
-    if (profile.email === null)
-      dispatch(getProfile(id))
-  }, [dispatch, profile])
-
-  const profileForm = () => {
-    return [
-      {
-        attr: 'email',
-        value: profile.email,
-        label: 'email'
-      },
-      {
-        attr: 'displayName',
-        value: profile.displayName,
-        label: 'nickname'
-      },
-      {
-        attr: 'photoURL',
-        value: profile.photoURL,
-        label: 'link to photo'
-      },
-      {
-        attr: 'phoneNumber',
-        value: profile.phoneNumber,
-        label: 'phone number'
-      }
-    ]
-  }
+    pendingUpdate && setMessage('Waiting...');
+    const mess = errorUpdate.message || 'Something went wrong';
+    errorUpdate && setMessage(mess);
+  }, [errorUpdate, pendingUpdate])
 
   const onSubmit = (form) => {
-    if (form) {
+    if (Object.values(form).length) {
       const updatedUser = {
         ...form, uid: profile.uid
       }
@@ -57,10 +42,9 @@ export const ProfilePage = () => {
 
       <h1>Edit profile</h1>
 
-      {pendingUpdate && <h3>Waiting...</h3>}
-      {errorUpdate && <h3>{errorUpdate.message || errorUpdate}</h3>}
+      <h3> {message} </h3>
 
-      <FormComp elementsArr={profileForm()} onSubmit={onSubmit} />
+      <FormComp elementsArr={profileForm(profile)} onSubmit={onSubmit} />
 
     </div>)
 };

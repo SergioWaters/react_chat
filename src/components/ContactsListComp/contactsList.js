@@ -1,13 +1,20 @@
 import React, { useEffect } from 'react';
 import { Contact } from './Contact';
 import { SearchUser } from '../'
-import { subForUserChats } from '../../api'
 import { makeStyles } from '@material-ui/core/styles';
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { getContacts, removeContact } from '../../store/contacts'
+import {
+  Link, useParams,
+} from "react-router-dom";
+import {
+  useSelector,
+  useDispatch
+} from "react-redux";
+import {
+  getContactsSuccess,
+  deleteContact
+} from '../../store/contacts'
 import List from '@material-ui/core/List';
-import { onSnapshot } from 'firebase/firestore';
+import { subForUserChatsApi } from '../../api';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -20,33 +27,34 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const ChatList = () => {
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { contactId } = useParams();
-  const { messageList } = useSelector((store) => store.messages);
-  const { contactList, pendingGet, errorGet } = useSelector((store) => store.contacts);
   const classes = useStyles();
+  const { profile } = useSelector((s) => s.profile)
+  const {
+    contactList,
+    pendingGet,
+    errorGet } = useSelector((store) => store.contacts);
 
-  const deleteContact = async (contact, e) => {
-    e.preventDefault();
-    dispatch(removeContact(contact));
-    navigate('/#');
+  const removeContact = (contact) => {
+    dispatch(deleteContact(contact))
   }
 
-  const getMessageColor = (id) => {
+  const getContactColor = (id) => {
     return (contactId === id) ?
       '#00808066' :
       'inherit';
   }
 
-  const getLastMessage = (id, key) => {
-    return messageList[id]?.[-1]?.[key]
-  }
-
   useEffect(() => {
-    // onSnapshot()
-    // dispatch(getContacts())
-  }, [dispatch, contactList]);
+    const subChats = () => {
+      const handle = (d) => dispatch(getContactsSuccess(d.data()))
+      subForUserChatsApi(handle)
+    };
+
+    profile.uid && subChats()
+
+  }, [dispatch, profile.uid]);
 
   return (
     <List className={classes.root}>
@@ -55,21 +63,21 @@ export const ChatList = () => {
       {errorGet && <h3>{errorGet.message}</h3>}
       {(!pendingGet || !errorGet) &&
         Object.entries(contactList).map((item) =>
-          <Link to={`/chat/${item.uid}`}
-            key={item.uid}
+          <Link to={`/chat/${item[0]}`}
+            key={item[0]}
             style={{
               textDecoration: 'none',
               color: 'inherit',
             }}
           >
             <Contact
-              key={item.uid}
-              callBack={deleteContact}
-              contactId={item.uid}
-              author={item.displayName || item.email}
+              key={item[0].uid}
+              callBack={() => removeContact(item[0])}
+              contactId={item[0]}
+              author={item[1].displayName || item[1].email}
               // text={getLastMessage(item[0], 'text')}
               // date={getLastMessage(item[0], 'date')}
-              color={getMessageColor(item.uid)}
+              color={getContactColor(item[0])}
             />
           </Link >
         )

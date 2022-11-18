@@ -1,27 +1,35 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { TextField } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { searchUserApi } from '../../api'
 import { createContact } from '../../store/contacts';
 
 export const SearchUser = () => {
+  const { errorCreate } = useSelector((s) => s.contacts)
   const dispatch = useDispatch()
   const searchInputRef = useRef();
-  const [error, setError] = useState('');
-  const [result, setResult] = useState('');
+  const [error, setError] = useState(errorCreate);
+  const [resultsArr, setResult] = useState([]);
 
   const handleChange = async () => {
     const searchLine = searchInputRef.current.value;
     setError("Searching");
     await searchUserApi(searchLine)
       .then((r) => r.forEach(i => {
-        setResult(i.data())
+        const newArr = resultsArr;
+        newArr.push(i.data());
+        setResult(newArr)
         setError('')
       }))
   };
-  const addContact = () => {
-    dispatch(createContact(result))
+  const addContact = (e) => {
+    const found = JSON.parse(e.target.innerText)
+    dispatch(createContact(found))
   };
+
+  useEffect(() => {
+    setError(errorCreate)
+  }, [errorCreate])
 
   return (
     <>
@@ -31,8 +39,17 @@ export const SearchUser = () => {
         label="find new contacts"
         onChange={handleChange}
       />
-      {error && <div className='results'>{error}</div>}
-      {result && <div className='results' onClick={addContact}>{result?.email}</div>}
+      {error && <div className='results'>
+        {error.code || error}
+      </div>}
+
+      {!!resultsArr.length &&
+        resultsArr.map((i) =>
+          <div key={i.uid} onClick={addContact}>
+            {JSON.stringify(i)}
+          </div>
+        )}
+
     </>
   )
 }

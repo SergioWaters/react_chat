@@ -66,7 +66,7 @@ export const profileReducer = (state = initialState, action) => {
       return {
         ...state,
         pendingUpdate: false,
-        errorUpdate: 'Your profile updated',
+        errorUpdate: { message: 'Your profile updated' },
         profile: payload
       };
     case UPDATE_PROFILE_ERROR:

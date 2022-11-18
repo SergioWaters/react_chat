@@ -1,16 +1,21 @@
 import {
-  child,
-  ref,
-  get,
-  remove,
-  push,
-  onChildChanged,
-  onValue
-} from "firebase/database";
-import { database } from "./firebase";
+  doc,
+  updateDoc,
+  setDoc,
+  onSnapshot,
+  getDoc,
+  serverTimestamp,
+  deleteField
+} from 'firebase/firestore';
+import { firestore } from "./firebase";
+import { auth } from './firebase'
 
-export const createMessageApi = (mess) => {
-  return push(child(ref(database), `messages/${mess.contactId}`), mess);
+const getCurrentUser = () => auth.currentUser;
+
+
+export const createMessageApi = (mess, chatId) => {
+  const currentUser = getCurrentUser()
+  return updateDoc(doc(firestore, 'chats', chatId), {})
 };
 
 export const removeMessageApi = ({ authorId, messageId }) => {

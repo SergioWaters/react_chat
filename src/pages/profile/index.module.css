@@ -8,3 +8,11 @@
 .input {
   max-width: 300px;
 }
+
+.message {
+  font-size: 18px;
+}
+
+.message-hidden {
+  display: none;
+}

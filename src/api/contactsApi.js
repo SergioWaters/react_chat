@@ -1,68 +1,83 @@
 import {
-  doc, getDocs, collection, where, updateDoc,
-  setDoc, deleteDoc, onSnapshot, query, getDoc,
-  serverTimestamp
+  doc,
+  updateDoc,
+  setDoc,
+  onSnapshot,
+  getDoc,
+  serverTimestamp,
+  deleteField
 } from 'firebase/firestore';
 import { firestore } from "./firebase";
 import { auth } from './firebase'
 
-const uid = () => auth.currentUser.uid;
+const getCurrentUser = () => auth.currentUser;
 
-export const createContactApi = async (result) => {
+export const createProfileContacts = (uid) => {
+  return setDoc(doc(firestore, "userChats", uid), {});
+}
 
-  const chatId = (result.uid > uid()) ?
-    auth.uid + result.uid :
-    result.uid + auth.uid
+export const updateProfileContacts = (chatId, userId, contact) => {
+  // firebase / userChats / user.uid / chatId /{ ...contact, date: date }
+  return updateDoc(doc(firestore, 'userChats', userId),
+    {
+      [chatId]: {
+        uid: contact.uid,
+        email: contact.email,
+        displayName: contact.displayName || null,
+        photoUrl: contact?.photoUrl || null,
+        date: serverTimestamp()
+      }
+    })
+}
 
-  const chat = await getDoc(doc(firestore, 'chats', chatId))
-
-  if (!chat.exists()) {
-    await setDoc(doc(firestore, 'chats', chatId), { messages: [] });
-
-    await updateDoc(doc(firestore, 'userChats', uid()), {
-      [chatId + '.userInfo']: {
-        uid: result.uid,
-        email: result.email,
-        displayName: result?.displayName,
-        photoUrl: result?.photoUrl
-      },
-      [chatId + '.date']: serverTimestamp()
-    });
-
-    await updateDoc(doc(firestore, 'userChats', result.uid), {
-      [chatId + '.userInfo']: {
-        uid: auth.uid,
-        email: auth.email,
-        displayName: auth?.displayName,
-        photoUrl: auth?.photoUrl,
-      },
-      [chatId + '.date']: serverTimestamp()
-    },
-    )
-  }
+export const getContactsApi = () => {
+  const currentUser = getCurrentUser()
+  return getDoc(doc(firestore, "userChats", currentUser.uid))
 };
 
-export const getContactsApi = (chatId) => {
-  return chatId ?
-    getDocs(collection(firestore, "userChats" + uid(), chatId)) :
-    getDocs(collection(firestore, "userChats", uid()))
-};
-
-export const subForUserChatsApi = (chatId) => {
-  return onSnapshot(doc(firestore, 'userChats', chatId || uid()), (data) => {
-    console.log('subForUserChats --- ', data, data.data())
-    return data.data()
-  })
+export const subForUserChatsApi = (cb) => {
+  const currentUser = getCurrentUser()
+  onSnapshot(doc(firestore, 'userChats', currentUser.uid), (data) => cb(data))
 }
 
 export const removeContactApi = (chatId) => {
-  return deleteDoc(doc(firestore, 'userChats' + uid(), chatId));
+  const currentUser = getCurrentUser()
+  return updateDoc(doc(firestore, 'userChats', currentUser.uid), { [chatId]: deleteField() });
 };
 
-export const searchUserApi = async (searchLine) => {
-  const que = query(
-    collection(firestore, 'users'),
-    where('email', '==', searchLine)
-  )
-  return getDocs(que)
+export const createContactApi = async (contact) => {
+  const currentUser = getCurrentUser()
+
+  const chatId = (contact.uid > currentUser.uid) ?
+    currentUser.uid + contact.uid :
+    contact.uid + currentUser.uid
+
+  const chat = await getDoc(doc(firestore, 'chats', chatId));
+  const cont = await getDoc(doc(firestore, 'userChats', contact.uid));
+  const curr = await getDoc(doc(firestore, 'userChats', currentUser.uid));
+
+  if (!chat.exists()) {
+    await setDoc(doc(firestore, 'chats', chatId), { messages: [] });
+  };
+
+  try {
+
+    if (!cont.exists()) {
+      await createProfileContacts(contact.uid);
+    };
+    await updateProfileContacts(chatId, contact.uid, currentUser)
+  } catch (error) {
+    console.log(contact.displayName, error)
+  }
+
+  try {
+    if (!curr.exists()) {
+      await createProfileContacts(currentUser.uid);
+    };
+    await updateProfileContacts(chatId, currentUser.uid, contact)
+
+  } catch (error) {
+    console.log(currentUser.displayName, error)
+
+  }
 };

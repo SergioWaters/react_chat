@@ -2,63 +2,41 @@ import React, { useEffect, useRef, useMemo } from 'react';
 import styles from './index.module.css';
 import { Message } from '../../components'
 import { Button, TextField } from '@material-ui/core'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteMessage,
-  // getMessages,
   createMessage,
   updateMessagesOnChange,
 } from "../../store/messages";
 import { onMessagesAddedApi } from '../../api/messagesApi';
-import { getDate, getId } from '../../resourses/helpers.js'
-// import { onValue, onChildAdded, ref, child } from 'firebase/database'
-// import { database } from "../../api/firebase";
-// import { useCollectionData } from 'react-firebase-hooks'
-
 
 export const FuncChat = () => {
-
-  const { contactId } = useParams();
   const dispatch = useDispatch();
-
-  const { messageList } = useSelector((store) => store.messages);
-  const { contactList } = useSelector((store) => store.contacts);
-  const messages = useMemo(() => messageList[contactId] || [], [messageList, contactId]);
-  // const [messageArr, loading] = useCollectionData()
-
+  const navigate = useNavigate()
   const inputRef = useRef();
   const scrollRef = useRef();
 
-  onMessagesAddedApi('', (s) => {
-    s.forEach(v => console.log(v))
-  });
+  const { contactId } = useParams();
+  const { messageList } = useSelector((store) => store.messages);
+  const { contactList } = useSelector((store) => store.contacts);
+  const messages = useMemo(() => messageList[contactId] || [], [messageList, contactId]);
+
 
   useEffect(() => {
-    dispatch(updateMessagesOnChange(contactId))
+    if (contactId && !contactList[contactId]) navigate('/')
+  }, [contactList, contactId, navigate])
 
-    // useEffect(() => {
-    // const unSub = onSnapshot(doc(db, "chats", contactId), (doc) => {
-    // doc.exists() && setMessages(doc.data().messages);
-    // });
-    // 
-    // return () => {
-    // unSub();
-    // };
-    // }, [data.chatId]);
-
+  useEffect(() => {
+    dispatch(updateMessagesOnChange(contactId));
     inputRef.current?.focus();
     scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight);
   }, [messages, contactId, dispatch]);
 
-  const updateMessageList = (author) => {
-    const mess = {
-      author: author || 'Me',
-      text: inputRef.current?.value,
-      date: getDate(),
-    };
-    if (mess.text) {
-      dispatch(createMessage({ ...mess, contactId: contactId }));
+  const sendMessage = () => {
+    const mess = inputRef.current?.value;
+    if (mess) {
+      dispatch(createMessage(mess, contactId));
       inputRef.current.value = '';
     }
   };
@@ -72,7 +50,7 @@ export const FuncChat = () => {
     <div className={styles.wrapper}>
       <div className={styles.title}>
         <span>Functional Chat Component</span>
-        <span>{contactList[contactId] + " - " + contactId}</span>
+        <span>{contactList[contactId]?.displayName + " - " + contactId}</span>
       </div>
 
       <div className={styles.messageList} ref={scrollRef}>

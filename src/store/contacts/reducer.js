@@ -52,7 +52,8 @@ export const contactsReducer = (state = initialState, action) => {
       delete state.contactList[payload];
       return {
         ...state,
-        pendingRemove: false, errorRemove: null,
+        pendingRemove: false,
+        errorRemove: null,
       };
     case REMOVE_CONTACT_ERROR:
       return { ...state, pendingRemove: false, errorRemove: payload };
