@@ -22,7 +22,7 @@ export const getMessages = (key) => async (dispatch, _, api) => {
     dispatch(getMessagesStart());
 
     const snapshot = await api.getMessagesApi(key);
-    console.log('from get messages - ', snapshot);
+    console.log("from get messages - ", snapshot);
     snapshot.forEach((snap) => {
       messages.push(snap.val());
     });
@@ -33,11 +33,11 @@ export const getMessages = (key) => async (dispatch, _, api) => {
   }
 };
 
-export const createMessage = (message) => async (dispatch, _, api) => {
+export const createMessage = (message, chatId) => async (dispatch, _, api) => {
   try {
     dispatch(createMessageStart());
 
-    await api.createMessageApi(message);
+    await api.createMessageApi(message, chatId);
 
     dispatch(createMessageSuccess(message));
   } catch (e) {
@@ -72,18 +72,18 @@ export const deleteAllMessages = (message) => async (dispatch, _, api) => {
 export const updateMessagesOnChange = (key) => async (dispatch, _, api) => {
   const messArr = {
     key: key,
-    messages: []
+    messages: [],
   };
   try {
     dispatch(getMessagesStart());
 
-    api.onMessagesAddedApi(key, (s) => {
-      s.forEach(v => messArr.messages.push(v.val()))
+    const unsub = await api.onMessagesAddedApi(key, (s) => {
+      messArr.messages = s.data().messages;
+      console.log(s.data().messages);
     });
 
-    dispatch(getMessagesSuccess(messArr))
-
+    dispatch(getMessagesSuccess(messArr));
   } catch (e) {
-    dispatch(updateMessagesError(e))
+    dispatch(updateMessagesError(e));
   }
-}
+};

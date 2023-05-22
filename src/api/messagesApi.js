@@ -1,41 +1,50 @@
 import {
+  arrayUnion,
   doc,
-  updateDoc,
   setDoc,
+  updateDoc,
   onSnapshot,
   getDoc,
   serverTimestamp,
-  deleteField
-} from 'firebase/firestore';
+  deleteField,
+  remove,
+  get,
+} from "firebase/firestore";
 import { firestore } from "./firebase";
-import { auth } from './firebase'
+import { auth } from "./firebase";
 
 const getCurrentUser = () => auth.currentUser;
 
-
 export const createMessageApi = (mess, chatId) => {
-  const currentUser = getCurrentUser()
-  return updateDoc(doc(firestore, 'chats', chatId), {})
+  const chatRef = doc(firestore, "chats", chatId);
+  console.log(mess, chatId, chatRef);
+
+  return setDoc(
+    chatRef,
+    {
+      messages: arrayUnion(mess),
+    },
+    { merge: true }
+  );
 };
 
 export const removeMessageApi = ({ authorId, messageId }) => {
-  return remove(child(ref(database), `messages/${authorId}/${messageId}`));
+  // return remove(child(ref(firestore), `messages/${authorId}/${messageId}`));
 };
 
 export const removeAllMessagesApi = (authorId) => {
-  return remove(child(ref(database), `messages/${authorId}`));
+  // return remove(child(ref(firestore), `messages/${authorId}`));
 };
 
 export const getMessagesApi = (key) => {
-  return get(child(ref(database), `messages/${key}`));
+  return getDoc(firestore, "chats", key);
 };
 
-
-// @TODO: разобраться с автообновлением 
+// @TODO: разобраться с автообновлением
 export const onMessagesAddedApi = (key, cb) => {
-  return onValue(ref(database, `messages/${key}`), (s) => cb(s));
+  return onSnapshot(doc(firestore, "chats", key), cb);
 };
 
 export const onMessagesChangedApi = () => {
-  return onChildChanged(child(ref(database), 'messages/'));
-}
+  // return onChildChanged(child(ref(firestore), "messages/"));
+};
