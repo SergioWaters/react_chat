@@ -1,21 +1,89 @@
-import { addMsg } from "./actions";
+import {
+  getMessagesStart,
+  getMessagesSuccess,
+  getMessagesError,
+  createMessageStart,
+  createMessageSuccess,
+  createMessageError,
+  removeMessageStart,
+  removeMessageSuccess,
+  removeMessageError,
+  removeAllMessagesStart,
+  removeAllMessagesSuccess,
+  removeAllMessagesError,
+  updateMessagesStart,
+  updateMessagesSuccess,
+  updateMessagesError,
+} from "./actions";
 
-export const addMsgMidWare = (message) => (dispatch, getState) => {
-  dispatch(addMsg(message));
+export const getMessages = (key) => async (dispatch, _, api) => {
+  const messages = [];
+  try {
+    dispatch(getMessagesStart());
 
-  let timerId = null;
-  if (message.contactId === "bot") {
-    timerId = setTimeout(() => {
-      dispatch(
-        addMsg({
-          contactId: message.contactId,
-          author: "Vlad-bot",
-          text: "Have no fear, Vlad is here!",
-        })
-      );
-    }, 1500);
+    const snapshot = await api.getMessagesApi(key);
+    console.log("from get messages - ", snapshot);
+    snapshot.forEach((snap) => {
+      messages.push(snap.val());
+    });
+
+    dispatch(getMessagesSuccess({ key: key, messages: messages }));
+  } catch (e) {
+    dispatch(getMessagesError(e));
   }
-  return () => {
-    clearInterval(timerId);
+};
+
+export const createMessage = (message, chatId) => async (dispatch, _, api) => {
+  try {
+    dispatch(createMessageStart());
+
+    await api.createMessageApi(message, chatId);
+
+    dispatch(createMessageSuccess(message));
+  } catch (e) {
+    dispatch(createMessageError(e));
+  }
+};
+
+export const deleteMessage = (message) => async (dispatch, _, api) => {
+  try {
+    dispatch(removeMessageStart());
+
+    await api.removeMessageApi(message);
+
+    dispatch(removeMessageSuccess(message));
+  } catch (e) {
+    dispatch(removeMessageError(e));
+  }
+};
+
+export const deleteAllMessages = (message) => async (dispatch, _, api) => {
+  try {
+    dispatch(removeAllMessagesStart());
+
+    await api.removeAllMessagesApi(message);
+
+    dispatch(removeAllMessagesSuccess(message));
+  } catch (e) {
+    dispatch(removeAllMessagesError(e));
+  }
+};
+
+export const updateMessagesOnChange = (key) => async (dispatch, _, api) => {
+  const messArr = {
+    key: key,
+    messages: [],
   };
+  try {
+    dispatch(getMessagesStart());
+
+    const unsub = await api.onMessagesAddedApi(key, (s) => {
+      messArr.messages = s.data().messages;
+      console.log(s.data().messages);
+    });
+
+    dispatch(getMessagesSuccess(messArr));
+  } catch (e) {
+    dispatch(updateMessagesError(e));
+  }
 };

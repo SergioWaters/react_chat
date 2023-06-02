@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
-import './index.css';
-import { PersistGate } from "redux-persist/integration/react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ProfilePage, ChatPage, GistsList, AxiosGists } from "./pages";
-import { FirstComp, Header } from './components'
-import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import { Provider } from 'react-redux';
+import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from './store';
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./api";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+import { RoutesComp, Header } from './components'
+
+import './index.css';
 
 const chatTheme = createTheme({
   palette: {
@@ -22,32 +24,39 @@ const chatTheme = createTheme({
 });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const someMessage = 'This Page Does not Exist'
-root.render(
-  <React.StrictMode>
-    <Provider store={store}>
+const App = () => {
+  const [session, setSession] = useState(null);
+  const isAuth = !!session;
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log('onAuthChange fron index --- ', user)
+        setSession(user);
+      } else {
+        setSession(null);
+      }
+    });
+  }, []);
+
+  return (
+    <Provider store={store} session={session}>
       <PersistGate persistor={persistor}>
         <ThemeProvider theme={chatTheme}>
           <BrowserRouter>
-
-            <Header />
-
-            <Routes>
-              <Route path="/gists" element={<GistsList />} />
-              <Route path="/axios" element={<AxiosGists />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/chat/*" element={<ChatPage />} />
-              <Route exact path="/" element={<ProfilePage />} />
-              <Route path="*" element={<FirstComp name={someMessage} />} />
-            </Routes>
-
+            <Header session={session} />
+            <RoutesComp isAuth={isAuth} />
           </BrowserRouter>
         </ThemeProvider>
       </PersistGate>
-    </Provider>
+    </Provider >
+  )
+}
+root.render(
+  <React.StrictMode>
+    <App />
   </React.StrictMode>
 );
-
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

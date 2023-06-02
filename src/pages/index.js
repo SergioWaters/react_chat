@@ -2,5 +2,6 @@ export * from './chat'
 export * from './profile'
 export * from './gists'
 export * from './axiosGists'
-
-
+export * from './signup'
+export * from './login'
+export * from './home'

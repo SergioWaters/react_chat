@@ -7,12 +7,9 @@
 
 .input {
   max-width: 300px;
+  margin: 10px;
 }
 
-.message {
-  font-size: 18px;
-}
-
-.message-hidden {
-  display: none;
+.button {
+  margin: 20px;
 }

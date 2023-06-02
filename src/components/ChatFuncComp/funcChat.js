@@ -1,94 +1,117 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import styles from './index.module.css';
-import { Message } from '../../components'
-import { Button, TextField } from '@material-ui/core'
-import { useNavigate, useParams } from 'react-router-dom'
+import React, { useEffect, useRef, useMemo } from "react";
+import styles from "./index.module.css";
+import { Message } from "../../components";
+import { Button, TextField } from "@material-ui/core";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addMsgMidWare, deleteMsg, messagesSelector } from "../../store/messages";
-import { getDate, getId } from '../../resourses/helpers.js'
+import {
+  deleteMessage,
+  createMessage,
+  updateMessagesOnChange,
+  getMessagesSuccess,
+} from "../../store/messages";
+import { onMessagesAddedApi } from "../../api/messagesApi";
+import { getId } from "../../resourses/helpers";
 
 export const FuncChat = () => {
-
-  const { contactId } = useParams();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const messages = useMemo(() => messagesSelector(contactId), [contactId]);
-  const messageList = useSelector(messages);
-  const { contactList } = useSelector((store) => store.contacts);
-  const [text, setText] = useState("");
-
+  const navigate = useNavigate();
   const inputRef = useRef();
   const scrollRef = useRef();
 
-  useEffect(() => {
-    inputRef.current?.focus();
-    scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight);
-  }, [messageList]);
+  const { contactId } = useParams();
+  const { messageList, errorCreate } = useSelector((store) => store.messages);
+  const { contactList } = useSelector((store) => store.contacts);
+  const { profile } = useSelector((store) => store.profile);
+  const messages = useMemo(
+    () => messageList[contactId] || [],
+    [messageList, contactId]
+  );
 
-  const updateMessageList = (author) => {
-    const mess = {
-      author: author || 'Me',
-      text,
-      id: getId(),
+  useEffect(() => {
+    if (contactId && !contactList[contactId]) navigate("/");
+  }, [contactList, contactId, navigate]);
+
+  // useEffect(() => {
+  //   dispatch(updateMessagesOnChange(contactId));
+  //   console.log("chat changed", contactId);
+  //   inputRef.current?.focus();
+  //   scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight);
+  // }, [contactId, dispatch]);
+
+  useEffect(() => {
+    const unSub = onMessagesAddedApi(contactId, (data) => {
+      const messArr = {
+        key: contactId,
+        messages: data.data().messages,
+      };
+      dispatch(getMessagesSuccess(messArr));
+      console.log(data.data().messages);
+    });
+
+    return () => {
+      unSub();
     };
-    if (text) {
-      dispatch(addMsgMidWare({ ...mess, contactId: contactId }));
-      setText("");
+  }, [contactId, dispatch]);
+
+  const sendMessage = () => {
+    const mess = {
+      id: getId(),
+      author: profile.displayName,
+      text: inputRef.current?.value,
+      date: Date.now(),
+    };
+    if (mess.text) {
+      dispatch(createMessage(mess, contactId));
+      inputRef.current.value = "";
     }
   };
 
-  const handler = (id) => {
-    if (id) dispatch(deleteMsg({ messId: id, contactId: contactId }));
-  }
-
   useEffect(() => {
-    if (!contactList[contactId]) navigate('/chat')
-  }, [contactList, contactId, navigate]);
+    console.log(errorCreate, profile.displayName);
+  }, [errorCreate, profile.displayName]);
+
+  const handler = (id) => {
+    if (id) dispatch(deleteMessage({ id, contactId }));
+  };
 
   return (
-    <>
-      <div className={styles.wrapper}>
-        <div className={styles.title}>
-          <span>Functional Chat Component</span>
-          <span>{contactList[contactId] + " - " + contactId}</span>
-          <span>{messageList.length} messages total</span>
-        </div>
-
-        <div className={styles.messageList} ref={scrollRef}>
-          {
-            messageList.map((message) =>
-              <Message
-                key={message.id || getId()}
-                messId={message.id || getId()}
-                author={message.author}
-                text={message.text}
-                date={message.date || getDate()}
-                callBack={handler}
-              />
-            )
-          }
-        </div>
-
-        <div className={styles.messageForm}>
-          <TextField inputRef={inputRef}
-            onChange={(e) => setText(e.target.value)}
-            id="standard-textarea"
-            label="Put your message here"
-            multiline
-            value={text}
-            className={styles.input}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => updateMessageList()}
-            className={styles.input}
-          >
-            send
-          </Button>
-        </div>
+    <div className={styles.wrapper}>
+      <div className={styles.title}>
+        <span>Functional Chat Component</span>
+        <span>{contactList[contactId]?.displayName + " - " + contactId}</span>
+        <span>Error: {JSON.stringify(errorCreate)}</span>
       </div>
-    </>
+
+      <div className={styles.messageList} ref={scrollRef}>
+        {!messages.length ? (
+          <h5>No messages yet</h5>
+        ) : (
+          messages.map((message) => (
+            <Message
+              key={message.id}
+              messId={message.id}
+              author={message.author}
+              text={message.text}
+              date={message.date}
+              callBack={handler}
+            />
+          ))
+        )}
+      </div>
+
+      <div className={styles.messageForm}>
+        <TextField
+          inputRef={inputRef}
+          id="standard-textarea"
+          label="Put your message here"
+          multiline
+          className={styles.input}
+        />
+        <Button variant="contained" color="primary" onClick={sendMessage}>
+          send
+        </Button>
+      </div>
+    </div>
   );
-}
+};

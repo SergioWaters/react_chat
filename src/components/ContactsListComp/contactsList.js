@@ -1,12 +1,20 @@
-import { React } from 'react';
+import React, { useEffect } from 'react';
 import { Contact } from './Contact';
-import { deleteChat } from '../../store/contacts';
+import { SearchUser } from '../'
 import { makeStyles } from '@material-ui/core/styles';
-import { Link, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { allMessagesSelector } from "../../store/messages";
+import {
+  Link, useParams,
+} from "react-router-dom";
+import {
+  useSelector,
+  useDispatch
+} from "react-redux";
+import {
+  getContactsSuccess,
+  deleteContact
+} from '../../store/contacts'
 import List from '@material-ui/core/List';
-
+import { subForUserChatsApi } from '../../api';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -19,29 +27,41 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const ChatList = () => {
-
   const dispatch = useDispatch()
   const { contactId } = useParams();
-  const messageList = useSelector(allMessagesSelector());
-  const { contactList } = useSelector((store) => store.contacts);
   const classes = useStyles();
+  const { profile } = useSelector((s) => s.profile)
+  const {
+    contactList,
+    pendingGet,
+    errorGet } = useSelector((store) => store.contacts);
 
-  const handler = (id) => {
-    dispatch(deleteChat({ contactId: id }))
+  const removeContact = (contact) => {
+    dispatch(deleteContact(contact))
   }
 
-  const getMessageColor = (id) => {
-    if (contactId === id) return '#00808066';
-    else return 'inherit';
+  const getContactColor = (id) => {
+    return (contactId === id) ?
+      '#00808066' :
+      'inherit';
   }
 
-  const getLastMessage = (id, key) => {
-    return messageList[id]?.[messageList[id].length - 1]?.[key]
-  }
+  useEffect(() => {
+    const subChats = () => {
+      const handle = (d) => dispatch(getContactsSuccess(d.data()))
+      subForUserChatsApi(handle)
+    };
+
+    profile.uid && subChats()
+
+  }, [dispatch, profile.uid]);
 
   return (
     <List className={classes.root}>
-      {
+      <SearchUser />
+      {pendingGet && <h3>{pendingGet}</h3>}
+      {errorGet && <h3>{errorGet.message}</h3>}
+      {(!pendingGet || !errorGet) &&
         Object.entries(contactList).map((item) =>
           <Link to={`/chat/${item[0]}`}
             key={item[0]}
@@ -51,12 +71,13 @@ export const ChatList = () => {
             }}
           >
             <Contact
-              callBack={handler}
-              author={item[1]}
+              key={item[0].uid}
+              callBack={() => removeContact(item[0])}
               contactId={item[0]}
-              text={getLastMessage(item[0], 'text')}
-              date={getLastMessage(item[0], 'date')}
-              color={getMessageColor(item[0])}
+              author={item[1].displayName || item[1].email}
+              // text={getLastMessage(item[0], 'text')}
+              // date={getLastMessage(item[0], 'date')}
+              color={getContactColor(item[0])}
             />
           </Link >
         )
@@ -64,3 +85,8 @@ export const ChatList = () => {
     </List >
   );
 }
+
+// uid:"pIQJ75w6xNhrNLhmjNCROwLInnq1"
+// email:"as@as.com"
+// phoneNumber:"+89012345678"
+// displayName:"Sergio"

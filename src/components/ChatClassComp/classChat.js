@@ -29,6 +29,7 @@ export class ClassChat extends React.Component {
     });
   };
   updateMessageList = (event) => {
+    event.preventDefault();
     let { id, author, text, messageList } = this.state;
     if (!author) author = "Anonimous";
     if (!text) return;
@@ -38,7 +39,6 @@ export class ClassChat extends React.Component {
       messageList: ([...messageList, message]),
       text: '',
     })
-    event.preventDefault();
   };
 
   onUpdate() {

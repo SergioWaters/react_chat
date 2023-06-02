@@ -1,20 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { alpha, makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-// import InputBase from '@material-ui/core/InputBase';
-import MenuItem from '@material-ui/core/MenuItem';
-import RateReviewIcon from '@material-ui/icons/RateReview';
-import Menu from '@material-ui/core/Menu';
-// import MenuIcon from '@material-ui/icons/Menu';
-// import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import { Link } from 'react-router-dom'
+import { AppBar, Toolbar, IconButton, Typography, Menu, MenuItem } from '@material-ui/core/';
+import { RateReview, AccountCircle, Mail, MoreVert } from '@material-ui/icons';
+import { signOut } from 'firebase/auth'
+import { auth } from "../../api/firebase";
+import { useDispatch } from 'react-redux';
+import { getProfile } from '../../store/profile';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -58,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -80,7 +71,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Header = ({ clickHandlerPr }) => {
+export const Header = ({ session }) => {
+  const dispatch = useDispatch()
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -88,7 +80,9 @@ export const Header = ({ clickHandlerPr }) => {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const clickHandler = clickHandlerPr
+  useEffect(() => {
+    session && dispatch(getProfile(session.uid))
+  })
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -109,117 +103,129 @@ export const Header = ({ clickHandlerPr }) => {
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
+    <>
+      {session ? <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        id={menuId}
+        keepMounted
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+      >
+        <MenuItem>
+          {session?.displayName || session?.email}
+        </MenuItem>
+        <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+          <MenuItem onClick={handleMenuClose}>Edit Profile</MenuItem>
+        </Link>
+        <MenuItem onClick={() => { handleMenuClose(); signOut(auth) }}>LogOut</MenuItem>
+      </Menu> :
+        <Menu
+          anchorEl={anchorEl}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          id={menuId}
+          keepMounted
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={isMenuOpen}
+          onClose={handleMenuClose}  >
+          <Link to="/login" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+            <MenuItem onClick={handleMenuClose}>Log In</MenuItem>
+          </Link>
+          <Link to="/signup" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+            <MenuItem onClick={handleMenuClose}>Sign Up</MenuItem>
+          </Link>
+        </Menu>
+      }
+    </>
   );
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <MailIcon />
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <NotificationsIcon />
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
+    <>{
+      session ?
+        <Menu
+          anchorEl={mobileMoreAnchorEl}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          id={mobileMenuId}
+          keepMounted
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={isMobileMenuOpen}
+          onClose={handleMobileMenuClose}
         >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
+          <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem>
+              <IconButton color="inherit">
+                <AccountCircle />
+              </IconButton>
+              <p>Profile</p>
+            </MenuItem >
+          </Link>
+          <Link to="/chat" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem>
+              <IconButton color="inherit">
+                <Mail />
+              </IconButton>
+              <p>Messages</p>
+            </MenuItem>
+          </Link>
+          <Link to='/chat/create' style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem>
+              <IconButton color="inherit">
+                <RateReview />
+              </IconButton>
+              <p>Create</p>
+            </MenuItem>
+          </Link>
+        </Menu > :
+        <Menu
+          anchorEl={mobileMoreAnchorEl}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          id={mobileMenuId}
+          keepMounted
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={isMobileMenuOpen}
+          onClose={handleMobileMenuClose}
+        >
+          <Link to="/login" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem onClick={handleMenuClose}>Log In</MenuItem>
+          </Link>
+          <Link to="/signup" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem onClick={handleMenuClose}>Sign Up</MenuItem>
+          </Link>
+        </Menu >
+    }</>
   );
 
   return (
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <Link to='/chat/create' style={{ textDecoration: 'none', color: 'inherit' }}>
-              <RateReviewIcon onClick={clickHandler} />
-            </Link>
-          </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
             {new Intl.DateTimeFormat("ru-RU").format(Date.now())}
           </Typography>
-          {/* <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div> */}
+          <Link to="/gists" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '10px' }}>
+            Gist
+          </Link>
+          <Link to="/axios" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '10px' }}>
+            AxiosGist
+          </Link>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Link to="/chat" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <MailIcon />
-              </Link>
+            <IconButton color="inherit" onClick={handleProfileMenuOpen}>
+              <AccountCircle />
             </IconButton>
-            {/* <IconButton aria-label="show 17 new notifications" color="inherit">
-                <NotificationsIcon />
-            </IconButton> */}
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              // onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <AccountCircle />
-              </Link>
-            </IconButton>
+            <Link to="/chat" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <IconButton color="inherit">
+                <Mail />
+              </IconButton>
+            </Link>
+            <Link to='/chat/create' style={{ textDecoration: 'none', color: 'inherit' }}>
+              <IconButton color="inherit">
+                <RateReview />
+              </IconButton>
+            </Link>
           </div>
-          <Link to="/gists" style={{ textDecoration: 'none', color: 'inherit' }}>
-            gist API
-          </Link>
-          <Link to="/axios" style={{ textDecoration: 'none', color: 'inherit' }}>
-            gist API with Axios
-          </Link>
-
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label="show more"
@@ -228,7 +234,7 @@ export const Header = ({ clickHandlerPr }) => {
               onClick={handleMobileMenuOpen}
               color="inherit"
             >
-              <MoreIcon />
+              <MoreVert />
             </IconButton>
           </div>
         </Toolbar>
