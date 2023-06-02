@@ -1,3 +1,19 @@
+# Messenger React + Firebase
+````
+### react
+### react-redux
+### react-router-dom
+### firebase/firestore
+
+material-ui
+axios
+lodash
+redux-persist
+redux-saga
+redux-thunk
+````
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
