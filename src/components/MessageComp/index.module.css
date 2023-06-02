@@ -10,6 +10,16 @@
   position: relative;
 }
 
+.message_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.message_wrapper.right {
+  justify-content: right;
+}
+
 .author {
   text-align: left;
   box-sizing: border-box;

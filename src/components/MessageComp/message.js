@@ -3,7 +3,7 @@ import { Card } from "@material-ui/core";
 
 export const Message = ({ messId, author, text, date, callBack, right }) => {
   return (
-    <>
+    <div className={styles.message_wrapper + " " + right ?? "right"}>
       <Card className={styles.message + " " + styles.message}>
         <h5 className={styles.author}>{author}</h5>
         <p className={styles.text}>{text}</p>
@@ -12,6 +12,6 @@ export const Message = ({ messId, author, text, date, callBack, right }) => {
           &times;
         </span>
       </Card>
-    </>
+    </div>
   );
 };
