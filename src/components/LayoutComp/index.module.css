@@ -1,4 +1,7 @@
-.wrapper {}
+.wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
 .body {
   display: flex;
@@ -20,4 +23,10 @@
   box-sizing: border-box;
   width: 100%;
   color: #008080;
+}
+
+@media (max-width < 1200px) {
+  .wrapper {
+    max-width: 90vw;
+  }
 }

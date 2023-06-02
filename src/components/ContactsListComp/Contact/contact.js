@@ -1,26 +1,30 @@
-import { React } from 'react';
+import { React } from "react";
 import {
   ListItem,
   Divider,
   ListItemText,
   ListItemAvatar,
   Typography,
-  Avatar
-} from '@material-ui/core';
+  Avatar,
+} from "@material-ui/core";
 
 export const Contact = ({ author, text, date, callBack, contactId, color }) => {
-
   return (
     <>
       <ListItem
         style={{
-          backgroundColor: color
+          backgroundColor: color,
         }}
         alignItems="flex-start">
         <ListItemAvatar>
-          <Avatar style={{
-            // backgroundColor: props?.color
-          }}>{author?.[0]}</Avatar>
+          <Avatar
+            style={
+              {
+                // backgroundColor: props?.color
+              }
+            }>
+            {author?.[0]}
+          </Avatar>
         </ListItemAvatar>
         <ListItemText
           component="div"
@@ -30,20 +34,27 @@ export const Contact = ({ author, text, date, callBack, contactId, color }) => {
               {text}
               <Typography
                 style={{
-                  display: 'block'
+                  display: "block",
                 }}
                 component="span"
-                variant="body2"
-              >
+                variant="body2">
                 {date}
               </Typography>
             </>
           }
         />
-        <span style={{ position: 'absolute', top: '0px', right: "3px", padding: '10px' }}
-          onClick={(e) => callBack(contactId, e)}>x</span>
-      </ListItem >
+        <span
+          style={{
+            position: "absolute",
+            top: "0px",
+            right: "3px",
+            padding: "10px",
+          }}
+          onClick={(e) => callBack(contactId, e)}>
+          &times;
+        </span>
+      </ListItem>
       <Divider variant="inset" component="li" />
     </>
-  )
-}
+  );
+};

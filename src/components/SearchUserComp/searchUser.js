@@ -12,20 +12,18 @@ export const SearchUser = () => {
   const [resultsArr, setResult] = useState([]);
 
   const handleChange = async (e) => {
-    console.log(e.target.value);
     setSearchLine(e.target.value);
     setError("Searching");
     setResult([]);
+    const newArr = [];
     try {
       await searchUserApi(searchLine).then((r) => {
-        r.exists()
-          ? r.forEach((i) => {
-              const newArr = resultsArr;
-              newArr.push(i.data());
-              setResult(newArr);
-            })
-          : setError("Nothing found");
+        r.forEach((i) => {
+          newArr.push(i.data());
+          setResult(newArr);
+        });
       });
+      if (!newArr.length) setError("Nothing found");
     } catch (e) {
       setError(e.message);
     }
@@ -36,6 +34,7 @@ export const SearchUser = () => {
     dispatch(createContact(found));
     setError("");
     setResult([]);
+    setSearchLine("");
   };
 
   useEffect(() => {
@@ -48,6 +47,7 @@ export const SearchUser = () => {
         style={{ margin: 5 }}
         label="find new contacts"
         onChange={handleChange}
+        value={searchLine}
       />
       {error && <div className="results">{error.code || error}</div>}
 

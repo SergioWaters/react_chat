@@ -20,19 +20,30 @@
 
 .messageList {
   overflow: auto;
+  max-width: 800px;
 }
 
 .messageForm {
   display: flex;
-  position: relative;
+  align-items: flex-end;
+  gap: 30px;
+  padding: 20px 0;
   width: 100%;
+  position: relative;
   left: 0;
   bottom: 0;
+  max-width: 800px;
+}
+
+.messageForm button {
+  width: 50px;
+  height: 50px;
+  margin: 10px;
 }
 
 .input {
   flex-grow: 1;
-  margin: 0px 10px;
+  margin: 10px;
 }
 
 .messageAuthor {
@@ -47,17 +58,6 @@
   border-radius: 15px;
   box-sizing: border-box;
   min-height: 50px;
-  border: 1px solid teal;
-  padding: 5px;
-  color: teal;
-  background-color: #f8f8f8;
-}
-
-.messageButton {
-  margin-bottom: 10px;
-  border-radius: 15px;
-  box-sizing: border-box;
-  width: 50px;
   border: 1px solid teal;
   padding: 5px;
   color: teal;
