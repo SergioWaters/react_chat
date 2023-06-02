@@ -11,7 +11,7 @@ import {
   getMessagesSuccess,
 } from "../../store/messages";
 import { onMessagesAddedApi } from "../../api/messagesApi";
-import { getId } from "../../resourses/helpers";
+import { getId, getFormattedDate } from "../../resourses/helpers";
 
 export const FuncChat = () => {
   const dispatch = useDispatch();
@@ -32,12 +32,10 @@ export const FuncChat = () => {
     if (contactId && !contactList[contactId]) navigate("/");
   }, [contactList, contactId, navigate]);
 
-  // useEffect(() => {
-  //   dispatch(updateMessagesOnChange(contactId));
-  //   console.log("chat changed", contactId);
-  //   inputRef.current?.focus();
-  //   scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight);
-  // }, [contactId, dispatch]);
+  useEffect(() => {
+    scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight);
+    inputRef.current?.focus();
+  }, [messages]);
 
   useEffect(() => {
     const unSub = onMessagesAddedApi(contactId, (data) => {
@@ -67,11 +65,7 @@ export const FuncChat = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(errorCreate, profile.displayName);
-  }, [errorCreate, profile.displayName]);
-
-  const handler = (id) => {
+  const removeMessage = (id) => {
     if (id) dispatch(deleteMessage({ id, contactId }));
   };
 
@@ -87,14 +81,15 @@ export const FuncChat = () => {
         {!messages.length ? (
           <h5>No messages yet</h5>
         ) : (
-          messages.map((message) => (
+          messages.map(({ id, author, text, date }) => (
             <Message
-              key={message.id}
-              messId={message.id}
-              author={message.author}
-              text={message.text}
-              date={message.date}
-              callBack={handler}
+              style={{ alignSelf: "right" }}
+              key={id}
+              messId={id}
+              author={author === profile.displayName ? "You" : author}
+              text={text}
+              date={getFormattedDate(date)}
+              callBack={removeMessage}
             />
           ))
         )}
